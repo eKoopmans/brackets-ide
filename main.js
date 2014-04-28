@@ -4,24 +4,31 @@ Allow to run build programs (such as running Python/Ruby/Node/etc scripts) from 
 **/
 
 /*jslint plusplus: true, vars: true, nomen: true */
-/*global define, brackets, console, setTimeout */
+/*global define, brackets, console, setTimeout, $, document, alert */
 
 define(function (require, exports, module) {
     "use strict";
+    var AppInit = brackets.getModule("utils/AppInit"),
+        CommandManager = brackets.getModule("command/CommandManager"),
+        Menus = brackets.getModule("command/Menus"),
+        NodeConnection = brackets.getModule("utils/NodeConnection"),
+        ExtensionUtils = brackets.getModule("utils/ExtensionUtils"),
+        DocumentManager = brackets.getModule("document/DocumentManager"),
+        KeyBindingManager = brackets.getModule('command/KeyBindingManager'),
+        FileUtils = brackets.getModule("file/FileUtils"),
+        PanelManager = brackets.getModule("view/PanelManager"),
+        Dialogs = brackets.getModule("widgets/Dialogs"),
+        nodeConnection = new NodeConnection(),
+        domainPath = ExtensionUtils.getModulePath(module) + "domain",
+        EditorManager = brackets.getModule("editor/EditorManager"),
+        CodeMirror = brackets.getModule("thirdparty/CodeMirror2/lib/codemirror");
 
-    var AppInit             = brackets.getModule("utils/AppInit"),
-        CommandManager      = brackets.getModule("command/CommandManager"),
-        Menus               = brackets.getModule("command/Menus"),
-        NodeConnection      = brackets.getModule("utils/NodeConnection"),
-        ExtensionUtils      = brackets.getModule("utils/ExtensionUtils"),
-        DocumentManager     = brackets.getModule("document/DocumentManager"),
-        KeyBindingManager   = brackets.getModule('command/KeyBindingManager'),
-        FileUtils           = brackets.getModule("file/FileUtils"),
-        PanelManager        = brackets.getModule("view/PanelManager"),
-        Dialogs             = brackets.getModule("widgets/Dialogs"),
-        nodeConnection      = new NodeConnection(),
-        domainPath          = ExtensionUtils.getModulePath(module) + "domain";
-
+    //load code mirror addons
+    //brackets.getModule(["thirdparty/CodeMirror2/addon/fold/brace-fold"]);
+    //brackets.getModule(["thirdparty/CodeMirror2/addon/fold/comment-fold"]);
+   // brackets.getModule(["thirdparty/CodeMirror2/addon/fold/markdown-fold"]);
+    require("linetoken")();
+    
     var curOpenDir,
         curOpenFile,
         curOpenLang,
@@ -38,8 +45,16 @@ define(function (require, exports, module) {
         return data;
     }
 
+    function handle_error(msg) {
+        var editor = EditorManager.getFocusedEditor();
+        if (editor) {
+            var cm = editor._codeMirror;
+            cm.foldCode(0);
+        }
+    }
+
     function handle() {
-        curOpenDir  = DocumentManager.getCurrentDocument().file._parentPath;
+        curOpenDir = DocumentManager.getCurrentDocument().file._parentPath;
         curOpenFile = DocumentManager.getCurrentDocument().file._path;
         curOpenLang = DocumentManager.getCurrentDocument().language._name;
 
@@ -61,14 +76,15 @@ define(function (require, exports, module) {
             cmd = cmd.replace("$FILE", curOpenFile);
         }).then(function () {
             nodeConnection.domains["builder.execute"].exec(curOpenDir, cmd)
-            .fail(function (err) {
-                $('#builder-panel .builder-content').html(_processCmdOutput(err));
-                panel.show();
-            })
-            .then(function (data) {
-                $('#builder-panel .builder-content').html(_processCmdOutput(data));
-                panel.show();
-            });
+                .fail(function (err) {
+                    handle_error(err);
+                    $('#builder-panel .builder-content').html(":::" + _processCmdOutput(err));
+                    panel.show();
+                })
+                .then(function (data) {
+                    $('#builder-panel .builder-content').html(_processCmdOutput(data));
+                    panel.show();
+                });
         }).done();
     }
 
@@ -99,9 +115,18 @@ define(function (require, exports, module) {
         });
 
         menu.addMenuItem('builder.open-conf');
-
+        menu.addMenuItem('builder.build');
+        
         // Load panel css
         ExtensionUtils.loadStyleSheet(module, "brackets-builder.css");
+       
+        // Gutter
+        var editor = EditorManager.getFocusedEditor()._codeMirror;
+        editor.setOption('gutters', ["compiler-gutter"].concat(editor.getOption('gutters')));
+        var e = document.createElement('span');
+        e.appendChild(document.createTextNode("***"));
+        e.style.color = "red";
+        editor.setGutterMarker(0, "compiler-gutter", e);
     });
 
 });
