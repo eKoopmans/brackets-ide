@@ -4,6 +4,13 @@
     padding: 5px 10px;
 }
 
+#Toolbar-Debug-And-Run {
+content: "";
+background: url("images/live_development_sprites.svg") 0 0 no-repeat;
+width: 24px;
+height: 24px;
+}
+
 .CodeMirror-foldmarker {
     padding-right: 5px;
     padding-left: 5px;

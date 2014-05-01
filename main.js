@@ -8,6 +8,8 @@ Allow to run build programs (such as running Python/Ruby/Node/etc scripts) from 
 
 define(function (require, exports, module) {
     "use strict";
+    var ext_name = "Brackets Compiler Support",
+        ext_name_notify = "[[" + ext_name + "]]";
     var AppInit = brackets.getModule("utils/AppInit"),
         CommandManager = brackets.getModule("command/CommandManager"),
         Menus = brackets.getModule("command/Menus"),
@@ -47,24 +49,34 @@ define(function (require, exports, module) {
 
     function handle_error(msg) {
         var editor = EditorManager.getFocusedEditor();
-        if (editor) {
-            var cm = editor._codeMirror;
-            cm.foldCode(0);
-        }
+        if (!editor) { alert("waht"); return; }
+        var cm = editor._codeMirror;
+        cm.foldCode(0);
+
+        // Set Gutter
+        cm.setOption('gutters', ["compiler-gutter"].concat(cm.getOption('gutters')));
+        
+        
+        var e = document.createElement('span');
+        e.appendChild(document.createTextNode("111"));
+        e.style.color = "red";
+        cm.setGutterMarker(0, "compiler-gutter", e);
+        
     }
 
     function handle() {
+        console.log("handle");
         curOpenDir = DocumentManager.getCurrentDocument().file._parentPath;
         curOpenFile = DocumentManager.getCurrentDocument().file._path;
         curOpenLang = DocumentManager.getCurrentDocument().language._name;
 
         nodeConnection.connect(true).fail(function (err) {
-            console.error("[[Brackets Builder]] Cannot connect to node: ", err);
+            console.error(ext_name_notify + "Cannot connect to node: ", err);
         }).then(function () {
             console.log('Building ' + curOpenLang + ' in ' + curOpenFile + '...\n');
 
             return nodeConnection.loadDomains([domainPath], true).fail(function (err) {
-                console.error("[[Brackets Builder]] Cannot register domain: ", err);
+                console.error(ext_name_notify + " Cannot register domain: ", err);
             });
         }).then(function () {
             builders.forEach(function (el) {
@@ -94,7 +106,7 @@ define(function (require, exports, module) {
             panel.hide();
         });
 
-        CommandManager.register('Handling Build', 'builder.build', handle);
+        CommandManager.register('Build and Run', 'builder.build', handle);
 
         KeyBindingManager.addBinding('builder.build', 'Ctrl-Alt-B');
 
@@ -117,16 +129,12 @@ define(function (require, exports, module) {
         menu.addMenuItem('builder.open-conf');
         menu.addMenuItem('builder.build');
         
+        $("#main-toolbar div").append("<a href='#' id='Toolbar-Debug-And-Run' title='Build and Run'>Run</a>").on("click", handle);
+        
         // Load panel css
         ExtensionUtils.loadStyleSheet(module, "brackets-builder.css");
        
-        // Gutter
-        var editor = EditorManager.getFocusedEditor()._codeMirror;
-        editor.setOption('gutters', ["compiler-gutter"].concat(editor.getOption('gutters')));
-        var e = document.createElement('span');
-        e.appendChild(document.createTextNode("***"));
-        e.style.color = "red";
-        editor.setGutterMarker(0, "compiler-gutter", e);
+        
     });
 
 });
