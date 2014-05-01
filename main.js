@@ -49,18 +49,20 @@ define(function (require, exports, module) {
 
     function handle_error(msg) {
         var editor = EditorManager.getFocusedEditor();
-        if (!editor) { alert("waht"); return; }
         var cm = editor._codeMirror;
-        cm.foldCode(0);
+        //cm.foldCode(0);
 
         // Set Gutter
         cm.setOption('gutters', ["compiler-gutter"].concat(cm.getOption('gutters')));
         
+        var arr = /:([0-9]*):/.exec(msg);
         
         var e = document.createElement('span');
-        e.appendChild(document.createTextNode("111"));
+        e.appendChild(document.createTextNode("•••"));
         e.style.color = "red";
-        cm.setGutterMarker(0, "compiler-gutter", e);
+        e.style.size = 14;
+        e.title = msg;
+        cm.setGutterMarker(parseInt(arr[1], 10), "compiler-gutter", e);
         
     }
 
@@ -106,7 +108,7 @@ define(function (require, exports, module) {
             panel.hide();
         });
 
-        CommandManager.register('Build and Run', 'builder.build', handle);
+        CommandManager.register('Run', 'builder.build', handle);
 
         KeyBindingManager.addBinding('builder.build', 'Ctrl-Alt-B');
 
@@ -129,7 +131,7 @@ define(function (require, exports, module) {
         menu.addMenuItem('builder.open-conf');
         menu.addMenuItem('builder.build');
         
-        $("#main-toolbar div").append("<a href='#' id='Toolbar-Debug-And-Run' title='Build and Run'>Run</a>").on("click", handle);
+        $("#main-toolbar div.buttons").append("<a href='#' id='Toolbar-Debug-And-Run' title='Run'>Run</a>").on("click", handle);
         
         // Load panel css
         ExtensionUtils.loadStyleSheet(module, "brackets-builder.css");
