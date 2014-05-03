@@ -2,8 +2,8 @@
 
 var a = require('./domain');
 function cb(err, suc) {
-    console.log(":::" + err);
-    console.log(suc);
+    if(err) { console.log(":::" + err); }
+    if(suc) { console.log(suc); }
 }
 var cmd = "ruby /home/jdunlap/.config/Brackets/extensions/user/brackets-compiler-support/test1.rb",
     dir = "/home/jdunlap/.config/Brackets/extensions/user/brackets-compiler-support/";

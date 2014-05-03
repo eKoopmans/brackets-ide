@@ -2,7 +2,7 @@
     {
         "name": "Python",
         "cmd": "python $FILE",
-        "linereg": ":([0-9]+):"
+        "linereg": "line ([0-9]+)"
     },
     {
         "name": "PHP",
@@ -11,10 +11,12 @@
     },
     {
         "name": "JavaScript",
-        "cmd": "node $FILE"
+        "cmd": "node $FILE",
+        "linereg": "js:([0-9]+)"
     },
     {
         "name": "Ruby",
-        "cmd": "ruby $FILE"
+        "cmd": "ruby $FILE",
+        "linereg": ":([0-9]+):"
     }
 ]
