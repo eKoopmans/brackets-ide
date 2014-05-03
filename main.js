@@ -35,7 +35,8 @@ define(function (require, exports, module) {
         curOpenFile,
         curOpenLang,
         cmd = '',
-        linereg;
+        linereg,
+        pastLineErrors = [];
 
     var builders = JSON.parse(require('text!builder.json')),
         panel,
@@ -53,7 +54,17 @@ define(function (require, exports, module) {
         panel.show();
     }
     
+    function reset_errors() {
+        var cm = EditorManager.getFocusedEditor()._codeMirror;
+        cm.clearGutter("compiler-gutter");
+        while (pastLineErrors.length > 0) {
+            var cur = pastLineErrors.pop();
+            cm.removeLineClass(cur, "background");
+        }
+    }
+    
     function add_errors(line, msg) {
+        pastLineErrors.push(line);
         var cm = EditorManager.getFocusedEditor()._codeMirror;
         var e = document.createElement('span');
         e.appendChild(document.createTextNode("●●●"));
@@ -93,6 +104,7 @@ define(function (require, exports, module) {
     }
     
     function handle() {
+        reset_errors(); // remove past error markers
         curOpenDir = DocumentManager.getCurrentDocument().file._parentPath;
         curOpenFile = DocumentManager.getCurrentDocument().file._path;
         curOpenLang = DocumentManager.getCurrentDocument().language._name;
