@@ -5,15 +5,16 @@
 
     var child_process = require("child_process"),
         domainName = "builder.execute";
-
+    
     function exec(directory, command, callback) {
-        //directory = directory.replace(" ", "\ ");
-        directory = '"'+directory+'"';
+        directory = directory.replace(" ", "\\ ");
+        //directory = '"'+directory+'"';
         child_process.exec(command, { cwd: directory}, function (err, stdout, stderr) {
             callback(err ? stderr : undefined, err ? undefined : stdout);
         });
     }
 
+    exports.exec = exec;
     exports.init = function (DomainManager) {
         if (!DomainManager.hasDomain(domainName)) {
             DomainManager.registerDomain(domainName, {
@@ -37,7 +38,7 @@
                 name: "stdout",
                 type: "string"
             }]
-        );
+            );
     };
 
 }());

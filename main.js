@@ -42,38 +42,57 @@ define(function (require, exports, module) {
         panelIsVisible = false;
 
     function _processCmdOutput(data) {
-        console.log(data);
         data = JSON.stringify(data);
         data = data.replace(/\\n/g, '<br />').replace(/\"/g, '').replace(/\\t/g, '');
         return data;
     }
-
+    function handle_success(msg) {
+        console.log("Success from compiler: " + msg);
+        $('#builder-panel .builder-content').html(_processCmdOutput(msg));
+        panel.show();
+    }
+    
+    function add_errors(line, msg) {
+        var cm = EditorManager.getFocusedEditor()._codeMirror;
+        var e = document.createElement('span');
+        e.appendChild(document.createTextNode("●●●"));
+        e.style.color = "red";
+        e.style.size = 18;
+        e.style.textAlign = "right";
+        e.title = msg;
+        cm.setGutterMarker(line, "compiler-gutter", e);
+        cm.addLineClass(line, "background", "compiler-error");
+        cm.refresh();
+    }
+    
+    function make_gutter() {
+        var cm = EditorManager.getFocusedEditor()._codeMirror;
+        var hasGutter = false;
+        var i, n;
+        for (i = 0, n = cm.getOption('gutters'); i < n.length; i++) { hasGutter = hasGutter || n[i] === 'compiler-gutter'; }
+        if (!hasGutter) { cm.setOption('gutters', ["compiler-gutter"].concat(cm.getOption('gutters'))); }
+    }
+    
     function handle_error(msg) {
-        var editor = EditorManager.getFocusedEditor();
-        var cm = editor._codeMirror;
+        console.log("Fail from compiler: " + msg);
+        $('#builder-panel .builder-content').html(":::" + _processCmdOutput(msg));
+        panel.show();
+        
         //cm.foldCode(0);
         
-        console.log("Returned from compiler: " + msg);
-        var arr = /:([0-9]*):/.exec(msg);
-        if(!arr) {
-            console.log("no line references detected");
-            return;
-        }
         // Set Gutter
-        var hasGutter = false;
-        for(var i = 0, n = cm.getOption('gutters'); i < n.length; i++) hasGutter = hasGutter || n[i]=='gutters'; 
-        if(!hasGutter) cm.setOption('gutters', ["compiler-gutter"].concat(cm.getOption('gutters')));
+        make_gutter();
         
-        var line = arr[1];
-        var e = document.createElement('span');
-        e.appendChild(document.createTextNode("•••"));
-        e.style.color = "red";
-        e.style.size = 14;
-        e.title = msg;
-        cm.setGutterMarker(parseInt(line, 10), "compiler-gutter", e);
-        cm.addLineClass(line, "background", "compiler-error");
+        var msgs = msg.split("\\n"),
+            hadErrors = false;
+        var i;
+        for (i = 0; i < msgs.length; i++) {
+            var arr = /:([0-9]*):/.exec(msg);
+            hadErrors = hadErrors || !!arr;
+            if (arr) { add_errors(+(arr[1]), msgs[i]); }
+        }
     }
-
+    
     function handle() {
         curOpenDir = DocumentManager.getCurrentDocument().file._parentPath;
         curOpenFile = DocumentManager.getCurrentDocument().file._path;
@@ -93,19 +112,12 @@ define(function (require, exports, module) {
                     cmd = el.cmd;
                 }
             });
-            
-            //cmd = cmd.replace("$FILE", curOpenFile.replace(" ", "\ "));
+            //.replace(" ", "\\ ")
+            cmd = cmd.replace("$FILE", curOpenFile);
         }).then(function () {
             nodeConnection.domains["builder.execute"].exec(curOpenDir, cmd)
-                .fail(function (err) {
-                    handle_error(err);
-                    $('#builder-panel .builder-content').html(":::" + _processCmdOutput(err));
-                    panel.show();
-                })
-                .then(function (data) {
-                    $('#builder-panel .builder-content').html(_processCmdOutput(data));
-                    panel.show();
-                });
+                .fail(handle_error)
+                .then(handle_success);
         }).done();
     }
 
