@@ -95,11 +95,17 @@ define(function (require, exports, module) {
         
         var msgs = msg.split("\\n"),
             hadErrors = false;
-        var i;
+        var i,
+            name = DocumentManager.getCurrentDocument().file._name;
         for (i = 0; i < msgs.length; i++) {
-            var arr = linereg.exec(msgs[i]);
-            hadErrors = hadErrors || !!arr;
-            if (arr) { add_errors(+(arr[1]) - 1, msgs[i]); }
+            // filter out errors not in file
+            if (msgs[i].indexOf(name) === -1) {
+                console.log("filtered out error not pertaining to file");
+            } else {
+                var arr = linereg.exec(msgs[i]);
+                hadErrors = hadErrors || !!arr;
+                if (arr) { add_errors(+(arr[1]) - 1, msgs[i]); }
+            }
         }
     }
     
