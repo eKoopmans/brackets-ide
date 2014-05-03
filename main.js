@@ -29,12 +29,13 @@ define(function (require, exports, module) {
     //brackets.getModule(["thirdparty/CodeMirror2/addon/fold/brace-fold"]);
     //brackets.getModule(["thirdparty/CodeMirror2/addon/fold/comment-fold"]);
    // brackets.getModule(["thirdparty/CodeMirror2/addon/fold/markdown-fold"]);
-    require("linetoken")();
+    //require("linetoken")();
     
     var curOpenDir,
         curOpenFile,
         curOpenLang,
-        cmd = '';
+        cmd = '',
+        linereg;
 
     var builders = JSON.parse(require('text!builder.json')),
         panel,
@@ -78,8 +79,6 @@ define(function (require, exports, module) {
         $('#builder-panel .builder-content').html(":::" + _processCmdOutput(msg));
         panel.show();
         
-        //cm.foldCode(0);
-        
         // Set Gutter
         make_gutter();
         
@@ -87,9 +86,9 @@ define(function (require, exports, module) {
             hadErrors = false;
         var i;
         for (i = 0; i < msgs.length; i++) {
-            var arr = /:([0-9]*):/.exec(msg);
+            var arr = linereg.exec(msgs[i]);
             hadErrors = hadErrors || !!arr;
-            if (arr) { add_errors(+(arr[1]), msgs[i]); }
+            if (arr) { add_errors(+(arr[1]) - 1, msgs[i]); }
         }
     }
     
@@ -110,6 +109,7 @@ define(function (require, exports, module) {
             builders.forEach(function (el) {
                 if (el.name.toLowerCase() === curOpenLang.toLowerCase()) {
                     cmd = el.cmd;
+                    linereg = new RegExp(el.linereg);
                 }
             });
             //.replace(" ", "\\ ")

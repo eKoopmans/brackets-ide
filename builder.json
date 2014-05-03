@@ -1,7 +1,13 @@
 [
     {
         "name": "Python",
-        "cmd": "python $FILE"
+        "cmd": "python $FILE",
+        "linereg": ":([0-9]+):"
+    },
+    {
+        "name": "PHP",
+        "cmd": "php $FILE",
+        "linereg": "on line ([0-9]+)"
     },
     {
         "name": "JavaScript",
