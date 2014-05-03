@@ -1,7 +1,7 @@
 ﻿{
     "name": "brackets-compiler-support",
     "title": "Brackets Compiler Support",
-    "description": "Allow to run build programs (such as running Python/Ruby/Node/etc scripts) from Brackets and display results in panel. It is possible to create own build systems via 'Edit>Edit Builder' menu item and editing opened JSON-file (you need to restart Brackets). Press Ctrl(Cmd)-B to build current file.",
+    "description": "Allow to run build programs (such as running Python/Ruby/Node/etc scripts) from Brackets and display results in panel. It is possible to create own build systems via 'Edit>Edit Builder' menu item and editing opened JSON-file (you need to restart Brackets). Press Ctrl(Cmd)-B to build current file. Forked from: Brackets-Builder",
     "homepage": "https://github.com/jadbox/brackets-compiler-support",
     "version": "0.0.1",
     "author": "JDunlap<jdunlap@outlook.com>",
@@ -11,9 +11,8 @@
         "brackets-builder.css",
         "brackets-builder-panel.html",
         "README.md",
-        "builder.json",
-        "linetoken.js"
+        "builder.json"
     ],
-    "contributors": ["jadbox", "Vhornets", "rwinzcyruz", "IonicaBizau"],
+    "contributors": ["jadbox"],
     "keywords": ["builder", “compiler”, “ide”]
 }
