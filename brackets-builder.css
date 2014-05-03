@@ -27,3 +27,10 @@ height: 24px;
     background-color:red;
     color: red;
 }
+.panel_error {
+    border-style: solid;
+    border-color: red;
+    border-width: 1px;
+    margin: 1px;
+}
+

@@ -48,28 +48,45 @@ define(function (require, exports, module) {
         data = data.replace(/\\n/g, '<br />').replace(/\"/g, '').replace(/\\t/g, '');
         return data;
     }
-    function handle_success(msg) {
-        console.log("Success from compiler: " + msg);
-        $('#builder-panel .builder-content').html(_processCmdOutput(msg));
+    
+    function setPanel(data) {
+        if (!data) {
+            data = "";
+            $('#builder-panel .builder-content').empty();
+            panel.hide();
+            return;
+        }
+        if (typeof data === "string") {
+            $('#builder-panel .builder-content').html(data);
+        } else {
+            $('#builder-panel .builder-content').append(data);
+        }
         panel.show();
     }
     
-    function reset_errors() {
-        if (!lastErrors[curOpenFile]) { return; }
-        var pastLineErrors = lastErrors[curOpenFile];
-        var cm = EditorManager.getFocusedEditor()._codeMirror;
-        cm.clearGutter("compiler-gutter");
-        $('.line-text-error').attr('title', '');
-        while (pastLineErrors.length > 0) {
-            var cur = pastLineErrors.pop();
-            cm.removeLineClass(cur, "background");
-            cm.removeLineClass(cur, "text");
+    function handle_success(msg) {
+        console.log("Success from compiler: " + msg);
+        setPanel(_processCmdOutput(msg));
+    }
+    
+    function reset() {
+        setPanel("");
+        if (lastErrors[curOpenFile]) {
+            var pastLineErrors = lastErrors[curOpenFile];
+            var cm = DocumentManager.getCurrentDocument()._masterEditor._codeMirror;
+            cm.clearGutter("compiler-gutter");
+            $('.line-text-error').attr('title', '');
+            while (pastLineErrors.length > 0) {
+                var cur = pastLineErrors.pop();
+                cm.removeLineClass(cur.line, "background");
+                cm.removeLineClass(cur.line, "text");
+            }
         }
         lastErrors = {};
     }
     
     function make_gutter() {
-        var cm = EditorManager.getFocusedEditor()._codeMirror;
+        var cm = DocumentManager.getCurrentDocument()._masterEditor._codeMirror;
         var hasGutter = false;
         var i, n;
         for (i = 0, n = cm.getOption('gutters'); i < n.length; i++) { hasGutter = hasGutter || n[i] === 'compiler-gutter'; }
@@ -78,7 +95,8 @@ define(function (require, exports, module) {
     
     function add_line_errors(line, msg) {
         //pastLineErrors.push(line);
-        var cm = EditorManager.getFocusedEditor()._codeMirror;
+        var dm = DocumentManager.getCurrentDocument()._masterEditor;
+        var cm = dm._codeMirror; //getFocusedEditor
         var e = document.createElement('span');
         e.appendChild(document.createTextNode("●●●"));
         e.style.color = "red";
@@ -93,31 +111,36 @@ define(function (require, exports, module) {
         //('.line-text-error').onchange(function() { });
     }
     
-    function add_errors_to_file(file) {
-        if (file !== curOpenFile) {
+    function add_errors_to_file() {
+        /*if (file !== curOpenFile) {
             console.log("filtered out error not pertaining to file");
             return;
-        }
+        }*/
         
         // Set Gutter
         make_gutter();
         
         // decorate current file
         var i,
-            n = lastErrors[file];
-        for (i = 0; i < n.length; i++) {
+            n = lastErrors[curOpenFile];
+        for (i = 0; n && i < n.length; i++) {
             add_line_errors(n[i].line, n[i].error);
         }
     }
     
+    function setCurrentFile() {
+        curOpenDir = DocumentManager.getCurrentDocument().file._parentPath;
+        curOpenFile = DocumentManager.getCurrentDocument().file._path;
+        curOpenLang = DocumentManager.getCurrentDocument().language._name;
+    }
+    
     function handle_error(msg) {
         console.log("Fail from compiler: " + msg);
-        $('#builder-panel .builder-content').html(":::" + _processCmdOutput(msg));
-        panel.show();
         
         var msgs = msg.split("\\n"),
             i,
-            name = DocumentManager.getCurrentDocument().file._name;
+            name = DocumentManager.getCurrentDocument().file._name,
+            files = [];
         
         for (i = 0; i < msgs.length; i++) {
             // filter out errors not in file
@@ -128,22 +151,54 @@ define(function (require, exports, module) {
                 file = file[file.length - 1]; // get last match
                 line = +(line[line.length - 1]) - 1;
                 err = err[err.length - 1];
+                err = JSON.stringify(err);
                 if (!lastErrors[file]) { lastErrors[file] = []; }
                 lastErrors[file].push(
                     { line: line, error: err }
                 );
                 
-                add_errors_to_file(file);
+                add_errors_to_file();
+                files.push(file);
+            }
+        }
+        
+        
+        var txt = "",
+            n;
+        var onPanelClickMaker = function (filename) {
+            return function () {
+                console.log("Setting doc to " + filename);
+                var doc = DocumentManager.getDocumentForPath(filename);
+                doc.then(function (doc) {
+                    DocumentManager.setCurrentDocument(doc);
+                    setTimeout(function () { // TODO: remove the need for timeout
+                        setCurrentFile();
+                        add_errors_to_file();
+                    }, 500);
+                }).done();
+                //DocumentManager.setCurrentDocument(doc);
+            };
+        };
+        
+        for (i = 0; i < files.length; i++) {
+            var filename = files[i];
+            var o = lastErrors[filename];
+            for (n = 0; n < o.length; n++) {
+                txt += "<div class='panel_error'>";
+                txt += filename + ":" + o[n].line + "<br/>" + o[n].error + "<br/>";
+                txt += "</div>";
+                
+                var node = $(txt);
+                node.on("click", onPanelClickMaker(filename));
+                setPanel(node);
             }
         }
     }
     
     function handle() {
-        curOpenDir = DocumentManager.getCurrentDocument().file._parentPath;
-        curOpenFile = DocumentManager.getCurrentDocument().file._path;
-        curOpenLang = DocumentManager.getCurrentDocument().language._name;
+        setCurrentFile();
         
-        reset_errors(); // remove past error markers
+        reset(); // remove past error markers
 
         nodeConnection.connect(true).fail(function (err) {
             console.error(ext_name_notify + "Cannot connect to node: ", err);
