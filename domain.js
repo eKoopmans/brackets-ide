@@ -7,6 +7,8 @@
         domainName = "builder.execute";
 
     function exec(directory, command, callback) {
+        //directory = directory.replace(" ", "\ ");
+        directory = '"'+directory+'"';
         child_process.exec(command, { cwd: directory}, function (err, stdout, stderr) {
             callback(err ? stderr : undefined, err ? undefined : stdout);
         });

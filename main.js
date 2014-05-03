@@ -42,6 +42,7 @@ define(function (require, exports, module) {
         panelIsVisible = false;
 
     function _processCmdOutput(data) {
+        console.log(data);
         data = JSON.stringify(data);
         data = data.replace(/\\n/g, '<br />').replace(/\"/g, '').replace(/\\t/g, '');
         return data;
@@ -51,23 +52,29 @@ define(function (require, exports, module) {
         var editor = EditorManager.getFocusedEditor();
         var cm = editor._codeMirror;
         //cm.foldCode(0);
-
-        // Set Gutter
-        cm.setOption('gutters', ["compiler-gutter"].concat(cm.getOption('gutters')));
         
+        console.log("Returned from compiler: " + msg);
         var arr = /:([0-9]*):/.exec(msg);
+        if(!arr) {
+            console.log("no line references detected");
+            return;
+        }
+        // Set Gutter
+        var hasGutter = false;
+        for(var i = 0, n = cm.getOption('gutters'); i < n.length; i++) hasGutter = hasGutter || n[i]=='gutters'; 
+        if(!hasGutter) cm.setOption('gutters', ["compiler-gutter"].concat(cm.getOption('gutters')));
         
+        var line = arr[1];
         var e = document.createElement('span');
         e.appendChild(document.createTextNode("•••"));
         e.style.color = "red";
         e.style.size = 14;
         e.title = msg;
-        cm.setGutterMarker(parseInt(arr[1], 10), "compiler-gutter", e);
-        
+        cm.setGutterMarker(parseInt(line, 10), "compiler-gutter", e);
+        cm.addLineClass(line, "background", "compiler-error");
     }
 
     function handle() {
-        console.log("handle");
         curOpenDir = DocumentManager.getCurrentDocument().file._parentPath;
         curOpenFile = DocumentManager.getCurrentDocument().file._path;
         curOpenLang = DocumentManager.getCurrentDocument().language._name;
@@ -86,8 +93,8 @@ define(function (require, exports, module) {
                     cmd = el.cmd;
                 }
             });
-
-            cmd = cmd.replace("$FILE", curOpenFile);
+            
+            //cmd = cmd.replace("$FILE", curOpenFile.replace(" ", "\ "));
         }).then(function () {
             nodeConnection.domains["builder.execute"].exec(curOpenDir, cmd)
                 .fail(function (err) {

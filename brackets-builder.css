@@ -23,3 +23,6 @@ height: 24px;
     cursor: pointer;
 }
 .compiler-gutter { width: 1em; text-align: right; }
+.compiler-error {
+    background-color:red;
+}
