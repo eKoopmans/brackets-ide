@@ -9,19 +9,22 @@
     {
         "name": "JavaScript",
         "cmd": "node $FILE",
-        "filereg": " ([^\\s]+):",
-        "linereg": "js:([0-9]+)"
+        "file_reg": "(.+):",
+        "line_reg": "js:([0-9]+)",
+        "err_reg": "\\n.*\\n(.*)"
     },
     {
         "name": "_Ruby",
         "cmd": "ruby $FILE",
-        "filereg": "todo",
-        "linereg": ":([0-9]+):"
+        "file_reg": "todo",
+        "line_reg": ":([0-9]+):",
+        "err_reg": "todo"
     },
     {
         "name": "_Python",
         "cmd": "python $FILE",
-        "filereg": "todo",
-        "linereg": "line ([0-9]+)"
+        "file_reg": "todo",
+        "line_reg": "line ([0-9]+)",
+        "err_reg": "todo"
     }
 ]
