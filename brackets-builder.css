@@ -23,7 +23,7 @@ height: 24px;
     cursor: pointer;
 }
 .compiler-gutter { width: 1em; text-align: right; }
-.compiler-error {
+.line-bg-error {
     background-color:red;
     color: red;
 }

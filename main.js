@@ -1,6 +1,9 @@
 /**
-(c) by Victor Hornets
-Allow to run build programs (such as running Python/Ruby/Node/etc scripts) from Brackets and display results in panel. It is possible to create own build systems via 'Edit>Edit Builder' menu item and editing opened JSON-file (you need to restart Brackets).
+by Jonathan Dunlap
+
+TODO: Run button only shows up for supported file types
+TODO: Error lines red background is removed on change
+TODO: Error rows in panel when clicked set focus on error line
 **/
 
 /*jslint plusplus: true, vars: true, nomen: true */
@@ -24,12 +27,6 @@ define(function (require, exports, module) {
         domainPath = ExtensionUtils.getModulePath(module) + "domain",
         EditorManager = brackets.getModule("editor/EditorManager"),
         CodeMirror = brackets.getModule("thirdparty/CodeMirror2/lib/codemirror");
-
-    //load code mirror addons
-    //brackets.getModule(["thirdparty/CodeMirror2/addon/fold/brace-fold"]);
-    //brackets.getModule(["thirdparty/CodeMirror2/addon/fold/comment-fold"]);
-   // brackets.getModule(["thirdparty/CodeMirror2/addon/fold/markdown-fold"]);
-    //require("linetoken")();
     
     var curOpenDir,
         curOpenFile,
@@ -57,9 +54,11 @@ define(function (require, exports, module) {
     function reset_errors() {
         var cm = EditorManager.getFocusedEditor()._codeMirror;
         cm.clearGutter("compiler-gutter");
+        $('.line-text-error').attr('title', '');
         while (pastLineErrors.length > 0) {
             var cur = pastLineErrors.pop();
             cm.removeLineClass(cur, "background");
+            cm.removeLineClass(cur, "text");
         }
     }
     
@@ -73,8 +72,11 @@ define(function (require, exports, module) {
         e.style.textAlign = "right";
         e.title = msg;
         cm.setGutterMarker(line, "compiler-gutter", e);
-        cm.addLineClass(line, "background", "compiler-error");
+        cm.addLineClass(line, "background", "line-bg-error");
+        cm.addLineClass(line, "text", "line-text-error");
         cm.refresh();
+        $('.line-text-error').attr('title', msg);
+        //('.line-text-error').onchange(function() { });
     }
     
     function make_gutter() {
