@@ -1,22 +1,27 @@
 [
     {
-        "name": "Python",
-        "cmd": "python $FILE",
-        "linereg": "line ([0-9]+)"
-    },
-    {
         "name": "PHP",
         "cmd": "php $FILE",
-        "linereg": "on line ([0-9]+)"
+        "file_reg": "in( file)? ([^\\s]+) ",
+        "line_reg": "on line ([0-9]+)",
+        "err_reg": "(.*) in"
     },
     {
         "name": "JavaScript",
         "cmd": "node $FILE",
+        "filereg": " ([^\\s]+):",
         "linereg": "js:([0-9]+)"
     },
     {
-        "name": "Ruby",
+        "name": "_Ruby",
         "cmd": "ruby $FILE",
+        "filereg": "todo",
         "linereg": ":([0-9]+):"
+    },
+    {
+        "name": "_Python",
+        "cmd": "python $FILE",
+        "filereg": "todo",
+        "linereg": "line ([0-9]+)"
     }
 ]

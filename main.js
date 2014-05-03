@@ -4,6 +4,7 @@ by Jonathan Dunlap
 TODO: Run button only shows up for supported file types
 TODO: Error lines red background is removed on change
 TODO: Error rows in panel when clicked set focus on error line
+TODO: Support errors in files other than active one
 **/
 
 /*jslint plusplus: true, vars: true, nomen: true */
@@ -32,8 +33,10 @@ define(function (require, exports, module) {
         curOpenFile,
         curOpenLang,
         cmd = '',
-        linereg,
-        pastLineErrors = [];
+        line_reg,
+        file_reg,
+        err_reg,
+        lastErrors = {}; //{fileName:[{line:int,error:string},...], ...}
 
     var builders = JSON.parse(require('text!builder.json')),
         panel,
@@ -52,6 +55,8 @@ define(function (require, exports, module) {
     }
     
     function reset_errors() {
+        if (!lastErrors[curOpenFile]) { return; }
+        var pastLineErrors = lastErrors[curOpenFile];
         var cm = EditorManager.getFocusedEditor()._codeMirror;
         cm.clearGutter("compiler-gutter");
         $('.line-text-error').attr('title', '');
@@ -60,10 +65,19 @@ define(function (require, exports, module) {
             cm.removeLineClass(cur, "background");
             cm.removeLineClass(cur, "text");
         }
+        lastErrors = {};
     }
     
-    function add_errors(line, msg) {
-        pastLineErrors.push(line);
+    function make_gutter() {
+        var cm = EditorManager.getFocusedEditor()._codeMirror;
+        var hasGutter = false;
+        var i, n;
+        for (i = 0, n = cm.getOption('gutters'); i < n.length; i++) { hasGutter = hasGutter || n[i] === 'compiler-gutter'; }
+        if (!hasGutter) { cm.setOption('gutters', ["compiler-gutter"].concat(cm.getOption('gutters'))); }
+    }
+    
+    function add_line_errors(line, msg) {
+        //pastLineErrors.push(line);
         var cm = EditorManager.getFocusedEditor()._codeMirror;
         var e = document.createElement('span');
         e.appendChild(document.createTextNode("●●●"));
@@ -79,12 +93,21 @@ define(function (require, exports, module) {
         //('.line-text-error').onchange(function() { });
     }
     
-    function make_gutter() {
-        var cm = EditorManager.getFocusedEditor()._codeMirror;
-        var hasGutter = false;
-        var i, n;
-        for (i = 0, n = cm.getOption('gutters'); i < n.length; i++) { hasGutter = hasGutter || n[i] === 'compiler-gutter'; }
-        if (!hasGutter) { cm.setOption('gutters', ["compiler-gutter"].concat(cm.getOption('gutters'))); }
+    function add_errors_to_file(file) {
+        if (file !== curOpenFile) {
+            console.log("filtered out error not pertaining to file");
+            return;
+        }
+        
+        // Set Gutter
+        make_gutter();
+        
+        // decorate current file
+        var i,
+            n = lastErrors[file];
+        for (i = 0; i < n.length; i++) {
+            add_line_errors(n[i].line, n[i].error);
+        }
     }
     
     function handle_error(msg) {
@@ -92,30 +115,35 @@ define(function (require, exports, module) {
         $('#builder-panel .builder-content').html(":::" + _processCmdOutput(msg));
         panel.show();
         
-        // Set Gutter
-        make_gutter();
-        
         var msgs = msg.split("\\n"),
-            hadErrors = false;
-        var i,
+            i,
             name = DocumentManager.getCurrentDocument().file._name;
+        
         for (i = 0; i < msgs.length; i++) {
             // filter out errors not in file
-            if (msgs[i].indexOf(name) === -1) {
-                console.log("filtered out error not pertaining to file");
-            } else {
-                var arr = linereg.exec(msgs[i]);
-                hadErrors = hadErrors || !!arr;
-                if (arr) { add_errors(+(arr[1]) - 1, msgs[i]); }
+            var file = file_reg.exec(msgs[i]),
+                line = line_reg.exec(msgs[i]),
+                err = err_reg.exec(msgs[i]);
+            if (file && line && err) {
+                file = file[file.length - 1]; // get last match
+                line = +(line[line.length - 1]) - 1;
+                err = err[err.length - 1];
+                if (!lastErrors[file]) { lastErrors[file] = []; }
+                lastErrors[file].push(
+                    { line: line, error: err }
+                );
+                
+                add_errors_to_file(file);
             }
         }
     }
     
     function handle() {
-        reset_errors(); // remove past error markers
         curOpenDir = DocumentManager.getCurrentDocument().file._parentPath;
         curOpenFile = DocumentManager.getCurrentDocument().file._path;
         curOpenLang = DocumentManager.getCurrentDocument().language._name;
+        
+        reset_errors(); // remove past error markers
 
         nodeConnection.connect(true).fail(function (err) {
             console.error(ext_name_notify + "Cannot connect to node: ", err);
@@ -129,7 +157,9 @@ define(function (require, exports, module) {
             builders.forEach(function (el) {
                 if (el.name.toLowerCase() === curOpenLang.toLowerCase()) {
                     cmd = el.cmd;
-                    linereg = new RegExp(el.linereg);
+                    line_reg = new RegExp(el.line_reg);
+                    file_reg = new RegExp(el.file_reg);
+                    err_reg = new RegExp(el.err_reg);
                 }
             });
             //.replace(" ", "\\ ")
