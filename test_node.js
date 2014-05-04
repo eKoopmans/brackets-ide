@@ -1,6 +1,6 @@
 /*global require, exports, console, use */
 
-var a = require('./domain');
+var a = require('./domain);
 function cb(err, suc) {
     if(err) { console.log(":::" + err); }
     if(suc) { console.log(suc); }

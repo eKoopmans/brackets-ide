@@ -4,7 +4,7 @@ by Jonathan Dunlap
 TODO: Run button only shows up for supported file types
 TODO: Error lines red background is removed on change
 TODO: Error rows in panel when clicked set focus on error line
-TODO: Support errors in files other than active one
+TODO: Clear errors for files that are in not in active window
 **/
 
 /*jslint plusplus: true, vars: true, nomen: true */
@@ -36,6 +36,7 @@ define(function (require, exports, module) {
         line_reg,
         file_reg,
         err_reg,
+        seperator,
         lastErrors = {}; //{fileName:[{line:int,error:string},...], ...}
 
     var builders = JSON.parse(require('text!builder.json')),
@@ -96,7 +97,7 @@ define(function (require, exports, module) {
     function add_line_errors(line, msg) {
         //pastLineErrors.push(line);
         var dm = DocumentManager.getCurrentDocument()._masterEditor;
-        var cm = dm._codeMirror; //getFocusedEditor
+        var cm = dm._codeMirror;
         var e = document.createElement('span');
         e.appendChild(document.createTextNode("●●●"));
         e.style.color = "red";
@@ -107,7 +108,9 @@ define(function (require, exports, module) {
         cm.addLineClass(line, "background", "line-bg-error");
         cm.addLineClass(line, "text", "line-text-error");
         cm.refresh();
-        $('.line-text-error').attr('title', msg);
+        setTimeout(function () {
+            $('.line-text-error').attr('title', msg);
+        }, 500);
         //('.line-text-error').onchange(function() { });
     }
     
@@ -137,7 +140,7 @@ define(function (require, exports, module) {
     function handle_error(msg) {
         console.log("Fail from compiler: " + msg);
         
-        var msgs = msg.split("\\n"),
+        var msgs = msg.split(seperator),
             i,
             name = DocumentManager.getCurrentDocument().file._name,
             files = [];
@@ -151,7 +154,7 @@ define(function (require, exports, module) {
                 file = file[file.length - 1]; // get last match
                 line = +(line[line.length - 1]) - 1;
                 err = err[err.length - 1];
-                err = JSON.stringify(err);
+               // err = JSON.stringify(err);
                 if (!lastErrors[file]) { lastErrors[file] = []; }
                 lastErrors[file].push(
                     { line: line, error: err }
@@ -165,16 +168,21 @@ define(function (require, exports, module) {
         
         var txt = "",
             n;
-        var onPanelClickMaker = function (filename) {
+        var onPanelClickMaker = function (filename, line) {
             return function () {
                 console.log("Setting doc to " + filename);
                 var doc = DocumentManager.getDocumentForPath(filename);
                 doc.then(function (doc) {
                     DocumentManager.setCurrentDocument(doc);
-                    setTimeout(function () { // TODO: remove the need for timeout
+                   // setTimeout(function () { // TODO: remove the need for timeout
                         setCurrentFile();
                         add_errors_to_file();
-                    }, 500);
+                        
+                        // set cursor TODO: non working
+                        var dm = DocumentManager.getCurrentDocument()._masterEditor;
+                        var cm = dm._codeMirror;
+                        cm.setCursor(line);
+                   // }, 600);
                 }).done();
                 //DocumentManager.setCurrentDocument(doc);
             };
@@ -185,11 +193,11 @@ define(function (require, exports, module) {
             var o = lastErrors[filename];
             for (n = 0; n < o.length; n++) {
                 txt += "<div class='panel_error'>";
-                txt += filename + ":" + o[n].line + "<br/>" + o[n].error + "<br/>";
+                txt += filename + " line " + o[n].line + "<br/>" + _processCmdOutput(o[n].error) + "<br/>";
                 txt += "</div>";
                 
                 var node = $(txt);
-                node.on("click", onPanelClickMaker(filename));
+                node.on("click", onPanelClickMaker(filename, o[n].line));
                 setPanel(node);
             }
         }
@@ -197,7 +205,6 @@ define(function (require, exports, module) {
     
     function handle() {
         setCurrentFile();
-        
         reset(); // remove past error markers
 
         nodeConnection.connect(true).fail(function (err) {
@@ -215,6 +222,7 @@ define(function (require, exports, module) {
                     line_reg = new RegExp(el.line_reg);
                     file_reg = new RegExp(el.file_reg);
                     err_reg = new RegExp(el.err_reg);
+                    seperator = new RegExp(el.seperator);
                 }
             });
             //.replace(" ", "\\ ")
