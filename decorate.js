@@ -21,6 +21,16 @@ define(function (require, exports, module) {
             cm.setOption('gutters', ["compiler-gutter"].concat(cm.getOption('gutters')));
         }
     }
+    
+    function remove_gutter() {
+        var cm = DocumentManager.getCurrentDocument()._masterEditor._codeMirror;
+        var opts = [], i, n;
+        for (i = 0, n = cm.getOption('gutters'); i < n.length; i++) {
+            if (n[i] !== 'compiler-gutter') { opts.push(n[i]); }
+        }
+        
+        cm.setOption('gutters', opts);
+    }
 
     function add_line_errors(line, msg) {
         //pastLineErrors.push(line);
@@ -42,8 +52,15 @@ define(function (require, exports, module) {
         //('.line-text-error').onchange(function() { });
     }
     
+    function setCurrentFile() {
+        curOpenDir = DocumentManager.getCurrentDocument().file._parentPath;
+        curOpenFile = DocumentManager.getCurrentDocument().file._path;
+        curOpenLang = DocumentManager.getCurrentDocument().language._name;
+    }
+    
     function reset(lastErrors) {
-        
+        remove_gutter();
+        setCurrentFile();
         if (lastErrors[curOpenFile]) {
             var pastLineErrors = lastErrors[curOpenFile];
             var cm = DocumentManager.getCurrentDocument()._masterEditor._codeMirror;
@@ -54,14 +71,10 @@ define(function (require, exports, module) {
                 cm.removeLineClass(cur.line, "background");
                 cm.removeLineClass(cur.line, "text");
             }
+        } else {
+            console.log("No Errors to reset in current file");
         }
         
-    }
-    
-    function setCurrentFile() {
-        curOpenDir = DocumentManager.getCurrentDocument().file._parentPath;
-        curOpenFile = DocumentManager.getCurrentDocument().file._path;
-        curOpenLang = DocumentManager.getCurrentDocument().language._name;
     }
     
     function add_errors_to_file(lastErrors) {

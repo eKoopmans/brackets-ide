@@ -46,9 +46,9 @@ define(function (require, exports, module) {
     }
 
     function reset() {
-        lastErrors = {};
         panel.setPanel("");
         decorate.reset(lastErrors);
+        lastErrors = {};
     }
 
     function handle_error(msg) {

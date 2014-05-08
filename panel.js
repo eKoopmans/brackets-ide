@@ -22,14 +22,14 @@ define(function (require, exports, module) {
         return data;
     }
 
-    function onPanelClickMaker(filename, line) {
+    function onPanelClickMaker(filename, line, lastErrors) {
         return function () {
             console.log("Setting doc to " + filename);
             var doc = DocumentManager.getDocumentForPath(filename);
             doc.then(function (doc) {
                 DocumentManager.setCurrentDocument(doc);
                 decorate.setCurrentFile();
-                decorate.add_errors_to_file();
+                decorate.add_errors_to_file(lastErrors);
 
                 // set cursor TODO: non working
                 var dm = DocumentManager.getCurrentDocument()._masterEditor;
@@ -69,7 +69,7 @@ define(function (require, exports, module) {
                     panel_txt += "</div>";
 
                     var panel_node = $(panel_txt);
-                    panel_node.on("click", onPanelClickMaker(filename, o[n].line));
+                    panel_node.on("click", onPanelClickMaker(filename, o[n].line, lastErrors));
                     setPanel(panel_node);
                 }
             }
