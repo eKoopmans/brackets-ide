@@ -5,6 +5,7 @@
 }
 
 #Toolbar-Debug-And-Run {
+color:#65ff65;
 content: "";
 background: url("images/live_development_sprites.svg") 0 0 no-repeat;
 width: 24px;
