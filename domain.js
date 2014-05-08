@@ -7,10 +7,15 @@
         domainName = "builder.execute";
     
     function exec(directory, command, callback) {
-        directory = directory.replace(" ", "\\ ");
+        
+        //directory = directory.replace(" ", "\\ ");
+        console.log("exec "+command+" from "+directory);
         //directory = '"'+directory+'"';
         child_process.exec(command, { cwd: directory}, function (err, stdout, stderr) {
-            callback(err ? stderr : undefined, err ? undefined : stdout);
+            console.log("returned: " + stdout);
+            console.log("err: " + err);
+            if(err && stdout) { err = stdout; stdout = undefined; }
+            callback(err, stdout);
         });
     }
 

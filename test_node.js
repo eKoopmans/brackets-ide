@@ -1,9 +1,10 @@
 /*global require, exports, console, use */
 
-var a = require('./domain);
+var executer = require('./domain');
 function cb(err, suc) {
-    if(err) { console.log(":::" + err); }
-    if(suc) { console.log(suc); }
+    //console.log("cb called " + err + " success:" + suc);
+    if(err) { console.log("error::" + err); }
+    if(suc) { console.log("success::" + suc); }
 }
 var cmd = "ruby /home/jdunlap/.config/Brackets/extensions/user/brackets-compiler-support/test1.rb",
     dir = "/home/jdunlap/.config/Brackets/extensions/user/brackets-compiler-support/";
@@ -14,4 +15,5 @@ var cmd = "ruby /home/jdunlap/.config/Brackets/extensions/user/brackets-compiler
 cmd = "php test1.php";
 dir = ".";
 
-a.exec(dir, cmd, cb);
+executer.exec(dir, cmd, cb);
+console.log("completed");

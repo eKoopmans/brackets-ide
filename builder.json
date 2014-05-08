@@ -2,7 +2,7 @@
     {
         "name": "PHP",
         "cmd": "php $FILE",
-        "file_reg": "in( file)? ([^\\s]+) ",
+        "file_reg": "in( file)? (.+) on line",
         "line_reg": "on line ([0-9]+)",
         "err_reg": "(.*) in",
         "seperator": "\\n"

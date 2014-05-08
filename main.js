@@ -225,8 +225,8 @@ define(function (require, exports, module) {
                     seperator = new RegExp(el.seperator);
                 }
             });
-            //.replace(" ", "\\ ")
-            cmd = cmd.replace("$FILE", curOpenFile);
+            var curOpenFileEsc = curOpenFile.replace(" ", "\\ ")
+            cmd = cmd.replace("$FILE", curOpenFileEsc); //+'"'
         }).then(function () {
             nodeConnection.domains["builder.execute"].exec(curOpenDir, cmd)
                 .fail(handle_error)
