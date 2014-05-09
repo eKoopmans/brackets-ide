@@ -14,8 +14,9 @@
         child_process.exec(command, { cwd: directory}, function (err, stdout, stderr) {
             //console.log("returned: " + stdout);
             //console.log("err: " + err);
-            if(err && stdout) { err = stdout; stdout = undefined; }
-            callback(err, stdout);
+            if(err && !stderr) { stderr = stdout; }
+            //callback(err, stdout);
+            callback(err ? stderr : undefined, err ? undefined : stdout);
         });
     }
 
