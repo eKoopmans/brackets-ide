@@ -2,9 +2,6 @@
 by Jonathan Dunlap
 
 TODO: Run button only shows up for supported file types
-TODO: Error lines red background is removed on change
-TODO: Error rows in panel when clicked set focus on error line
-TODO: Clear errors for files that are in not in active window
 **/
 
 /*jslint plusplus: true, vars: true, nomen: true */
