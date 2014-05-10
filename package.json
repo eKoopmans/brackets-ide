@@ -1,18 +1,16 @@
-﻿{
-    "name": "brackets-compiler-support",
-    "title": "Brackets Compiler Support",
-    "description": "Allow to run build programs (such as running Python/Ruby/Node/etc scripts) from Brackets and display results in panel. It is possible to create own build systems via 'Edit>Edit Builder' menu item and editing opened JSON-file (you need to restart Brackets). Press Ctrl(Cmd)-B to build current file. Forked from: Brackets-Builder",
-    "homepage": "https://github.com/jadbox/brackets-compiler-support",
-    "version": "0.0.1",
-    "author": "JDunlap<jdunlap@outlook.com>",
-    "files": [
-        "main.js",
-        "domain.js",
-        "brackets-builder.css",
-        "brackets-builder-panel.html",
-        "README.md",
-        "builder.json"
-    ],
-    "contributors": ["jadbox"],
-    "keywords": ["builder", “compiler”, “ide”]
+{
+    "title": "Integrated Development",
+    "name": "brackets-integrated-development",
+    "description": "This extension provides Brackets with integrated development capabilities like compiling, error line markers, and debugging support. Current status: works only with PHP for now.",
+    "version": "0.1",
+    "homepage": "https://github.com/jadbox/brackets-integrated-development",
+    "author": "Jonathan A Dunlap",
+    "email": "jdunlap@outlook.com",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/jadbox/brackets-integrated-development.git"
+    },
+    "engines": {
+        "brackets": ">=0.38.0"
+    }
 }

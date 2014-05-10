@@ -1,7 +1,7 @@
-brackets-compiler-support
+brackets-ide
 ================
-Forked from Brackets Builder, this extension aims to provide Brackets with IDE capabilities like compiling, error line markers, and debugging support. The target languages are PHP, PYTHON, and RUBY with the ability to add more.
+This extension provides Brackets with integrated development capabilities like compiling, error line markers, and debugging support. Current status: works only with PHP for now.
 
-Current status: non-working alpha
+It is possible to create own build systems via 'Edit>Edit Builder' menu item and editing opened JSON-file (you need to restart Brackets). 
 
-Press Ctrl(Cmd)-Alt-B to build current file.
+Use the left Run icon or press Ctrl(Cmd)-Alt-B to build current file.
