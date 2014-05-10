@@ -75,7 +75,8 @@ define(function (require, exports, module) {
                 for (n = 0; n < o.length; n++) {
                 
                     panel_txt += "<tr class='panel_error'>";
-                    panel_txt += "<td/><td>" + _processCmdOutput(o[n].error) + "</td><td>" + cleanFilename(filename) + "</td><td>" + o[n].line + "</td>";
+                    panel_txt += "<td class='error-icon'></td>";
+                    panel_txt += "<td>" + _processCmdOutput(o[n].error) + "</td><td>" + cleanFilename(filename) + "</td><td>" + o[n].line + "</td>";
                     panel_txt += "</tr>";
 
                     var panel_node = $(panel_txt);

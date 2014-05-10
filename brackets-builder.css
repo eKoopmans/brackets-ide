@@ -39,4 +39,9 @@ height: 24px;
     border-width: 1px;
     margin: 1px;
 }
-
+.error-icon {
+    background: url("images/error.svg") center center no-repeat;
+    background-size:20px 20px;
+    width: 25px;
+    height: 25px;
+}

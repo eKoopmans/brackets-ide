@@ -57,7 +57,7 @@ define(function (require, exports, module) {
         setTimeout(function () {
             var onClick = function () {
                 cm.removeLineClass(line, "background", "cm-error");
-                //cm.removeLineClass(line, "text", "line-text-error");
+                //cm.removeLineClass(line, "text", "line-text-error"); // needed
             };
             $('.line-text-error').attr('title', msg);
             $('.line-text-error').one("click", onClick);
