@@ -90,7 +90,7 @@ define(function (require, exports, module) {
         var curOpenDir = DocumentManager.getCurrentDocument().file._parentPath,
             curOpenFile = DocumentManager.getCurrentDocument().file._path,
             curOpenLang = DocumentManager.getCurrentDocument().language._name;
-        
+
         reset(); // remove past error markers
 
         nodeConnection.connect(true).fail(function (err) {
@@ -119,13 +119,21 @@ define(function (require, exports, module) {
                 .then(handle_success);
         }).done();
     }
-    
+
     function handle() {
+        var curOpenLang = DocumentManager.getCurrentDocument().language._name;
         // Save current file
-        //var t = CommandManager;
-        //CommandManager.execute(commands.FILE_SAVE_ALL);
-        
-        save.saveFileList(DocumentManager.getWorkingSet()).then(function () {
+        var saveFileList = DocumentManager.getAllOpenDocuments(),
+            i,
+            filteredList = [];
+        // Filter out files of a different type
+        for (i = 0; i < saveFileList.length; i++) {
+            if (saveFileList[i].language._name === curOpenLang) {
+                filteredList.push(saveFileList[i].file);
+            }
+        }
+
+        save.saveFileList(filteredList).then(function () {
             handle_node();
         });
 
