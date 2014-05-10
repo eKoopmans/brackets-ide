@@ -1,8 +1,8 @@
 {
     "title": "Integrated Development",
     "name": "brackets-integrated-development",
-    "description": "This extension provides Brackets with integrated development capabilities like compiling, error line markers, and debugging support. Current status: works only with PHP for now.",
-    "version": "0.1",
+    "description": "This extension provides Brackets with integrated development capabilities like compiling, error line markers, and debugging support. Current status: works only with PHP currently.",
+    "version": "0.5.01",
     "homepage": "https://github.com/jadbox/brackets-integrated-development",
     "author": "Jonathan A Dunlap",
     "email": "jdunlap@outlook.com",
