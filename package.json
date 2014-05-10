@@ -12,6 +12,7 @@
     },
     "engines": {
         "brackets": ">=0.38.0"
-    }
-    
+    },
+    "categories": ["IDE", "PHP", "compiler", "compiling"],
+    "license": "MIT"
 }
