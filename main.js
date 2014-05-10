@@ -12,6 +12,8 @@ define(function (require, exports, module) {
     var ext_name = "Brackets Compiler Support",
         ext_name_notify = "[[" + ext_name + "]]";
     var AppInit = brackets.getModule("utils/AppInit"),
+        commands = brackets.getModule("command/Commands"),
+        DocumentCommandHandlers = brackets.getModule("document/DocumentCommandHandlers"),
         CommandManager = brackets.getModule("command/CommandManager"),
         Menus = brackets.getModule("command/Menus"),
         NodeConnection = brackets.getModule("utils/NodeConnection"),
@@ -26,6 +28,7 @@ define(function (require, exports, module) {
         EditorManager = brackets.getModule("editor/EditorManager"),
         CodeMirror = brackets.getModule("thirdparty/CodeMirror2/lib/codemirror"),
         panel = require("panel"),
+        save = require("save"),
         decorate = require("decorate");
 
     var cmd = '',
@@ -74,16 +77,16 @@ define(function (require, exports, module) {
                     error: err
                 });
 
-                
+
                 files.push(file);
             }
         }
         decorate.add_errors_to_file(lastErrors); // TODO: decorate all files in above loop
         panel.setErrors(lastErrors);
-        
+
     }
 
-    function handle() {
+    function handle_node() {
         var curOpenDir = DocumentManager.getCurrentDocument().file._parentPath,
             curOpenFile = DocumentManager.getCurrentDocument().file._path,
             curOpenLang = DocumentManager.getCurrentDocument().language._name;
@@ -108,13 +111,24 @@ define(function (require, exports, module) {
                     seperator = new RegExp(el.seperator);
                 }
             });
-            var curOpenFileEsc = curOpenFile.replace(" ", "\\ ")
+            var curOpenFileEsc = curOpenFile.replace(" ", "\\ ");
             cmd = cmd.replace("$FILE", curOpenFileEsc); //+'"'
         }).then(function () {
             nodeConnection.domains["builder.execute"].exec(curOpenDir, cmd)
                 .fail(handle_error)
                 .then(handle_success);
         }).done();
+    }
+    
+    function handle() {
+        // Save current file
+        //var t = CommandManager;
+        //CommandManager.execute(commands.FILE_SAVE_ALL);
+        
+        save.saveFileList(DocumentManager.getWorkingSet()).then(function () {
+            handle_node();
+        });
+
     }
 
     AppInit.appReady(function () {
