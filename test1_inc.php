@@ -1,6 +1,5 @@
 <?php
-
-$color = 'green;
+$color = 'green';
 $fruit = 'apple';
 
 ?>

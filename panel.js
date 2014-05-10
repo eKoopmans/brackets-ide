@@ -35,6 +35,7 @@ define(function (require, exports, module) {
                 var dm = DocumentManager.getCurrentDocument()._masterEditor;
                 var cm = dm._codeMirror;
                 cm.setCursor(line);
+                cm.scrollIntoView({line: line, ch: 0});
             }).done();
         };
     }
@@ -42,16 +43,25 @@ define(function (require, exports, module) {
     function setPanel(data) {
         if (!data) {
             data = "";
-            $('#builder-panel .builder-content').empty();
+            $('#builder-panel .builder-content-errors').empty();
             panel.hide();
             return;
         }
         if (typeof data === "string") {
-            $('#builder-panel .builder-content').html(_processCmdOutput(data));
+            $('#builder-panel .resizable-content-error').hide();
+            $('#builder-panel .builder-content-result').show().html(_processCmdOutput(data));
         } else {
-            $('#builder-panel .builder-content').append(data);
+            $('#builder-panel .builder-content-result').hide();
+            $('#builder-panel .resizable-content-error').show();
+            $('#builder-panel .builder-content-errors').append(data);
         }
         panel.show();
+    }
+    
+    function cleanFilename(file) {
+       // var reg = /[\/\\]([^\/\\]+)$/g;
+        //return reg.match(file)[1];
+        return file.replace(/^[\w\W]*[\\\/]/, '');
     }
 
     function setErrors(lastErrors) {
@@ -64,12 +74,13 @@ define(function (require, exports, module) {
                 var o = lastErrors[filename];
                 for (n = 0; n < o.length; n++) {
                 
-                    panel_txt += "<div class='panel_error'>";
-                    panel_txt += filename + " line " + o[n].line + "<br/>" + _processCmdOutput(o[n].error) + "<br/>";
-                    panel_txt += "</div>";
+                    panel_txt += "<tr class='panel_error'>";
+                    panel_txt += "<td/><td>" + _processCmdOutput(o[n].error) + "</td><td>" + cleanFilename(filename) + "</td><td>" + o[n].line + "</td>";
+                    panel_txt += "</tr>";
 
                     var panel_node = $(panel_txt);
                     panel_node.on("click", onPanelClickMaker(filename, o[n].line, lastErrors));
+                    console.log("panel_txt " + panel_txt);
                     setPanel(panel_node);
                 }
             }

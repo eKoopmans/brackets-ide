@@ -56,7 +56,8 @@ define(function (require, exports, module) {
         cm.refresh();
         setTimeout(function () {
             var onClick = function () {
-                //cm.removeLineClass(line, "text");
+                cm.removeLineClass(line, "background", "cm-error");
+                //cm.removeLineClass(line, "text", "line-text-error");
             };
             $('.line-text-error').attr('title', msg);
             $('.line-text-error').one("click", onClick);
@@ -82,8 +83,9 @@ define(function (require, exports, module) {
     }
     
     function reset(lastErrors) {
+        $('.line-text-error').attr('title', "");
         remove_gutter();
-        setCurrentFile();
+        setCurrentFile(); // TODO: not sure if needed
         var docList = DocumentManager.getAllOpenDocuments();
         var i;
         for (i = 0; i < docList.length; i++) {

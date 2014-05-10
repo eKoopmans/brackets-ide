@@ -12,7 +12,12 @@ background-size:24px 24px;
 width: 24px;
 height: 24px;
 }
-
+.builder-table {
+    width:100%;
+}
+.builder-table th {
+    text-align: left;
+}
 .CodeMirror-foldmarker {
     padding-right: 5px;
     padding-left: 5px;
