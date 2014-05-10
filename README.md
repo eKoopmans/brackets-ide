@@ -1,4 +1,4 @@
-brackets-ide
+Integrated Development for Brackets
 ================
 This extension provides Brackets with integrated development capabilities like compiling, error line markers, and debugging support. Current status: works only with PHP for now.
 
