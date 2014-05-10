@@ -34,7 +34,7 @@ define(function (require, exports, module) {
     var cmd = '',
         line_reg,
         file_reg,
-        err_reg,
+        msg_reg,
         seperator,
         lastErrors = {}; //{fileName:[{line:int,error:string},...], ...}
 
@@ -63,7 +63,7 @@ define(function (require, exports, module) {
             // filter out errors not in file
             var file = file_reg.exec(msgs[i]),
                 line = line_reg.exec(msgs[i]),
-                err = err_reg.exec(msgs[i]);
+                err = msg_reg.exec(msgs[i]);
             if (file && line && err) {
                 file = file[file.length - 1]; // get last match
                 line = +(line[line.length - 1]) - 1;
@@ -107,7 +107,7 @@ define(function (require, exports, module) {
                     cmd = el.cmd;
                     line_reg = new RegExp(el.line_reg);
                     file_reg = new RegExp(el.file_reg);
-                    err_reg = new RegExp(el.err_reg);
+                    msg_reg = new RegExp(el.msg_reg);
                     seperator = new RegExp(el.seperator);
                 }
             });
@@ -155,7 +155,7 @@ define(function (require, exports, module) {
         menu.addMenuItem('builder.open-conf');
         menu.addMenuItem('builder.build');
 
-        $("#main-toolbar div.buttons").append("<a href='#' id='Toolbar-Debug-And-Run' title='Run'>Run</a>").on("click", handle);
+        $("#main-toolbar div.buttons").append("<a href='#' id='Toolbar-Debug-And-Run' title='Run'></a>").on("click", handle);
 
         // Load css
         ExtensionUtils.loadStyleSheet(module, "brackets-builder.css");

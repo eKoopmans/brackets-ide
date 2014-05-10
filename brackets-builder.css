@@ -7,7 +7,8 @@
 #Toolbar-Debug-And-Run {
 color:#65ff65;
 content: "";
-background: url("images/live_development_sprites.svg") 0 0 no-repeat;
+background: url("images/run.svg") 0 0 no-repeat;
+background-size:24px 24px;
 width: 24px;
 height: 24px;
 }
@@ -24,9 +25,8 @@ height: 24px;
     cursor: pointer;
 }
 .compiler-gutter { width: 1em; text-align: right; }
-.line-bg-error {
-    background-color:red;
-    color: red;
+.cm-error {
+    background-color:#d05353;
 }
 .panel_error {
     border-style: solid;

@@ -4,7 +4,7 @@
         "cmd": "php $FILE",
         "file_reg": "in( file)? (.+) on line",
         "line_reg": "on line ([0-9]+)",
-        "err_reg": "(.*) in",
+        "msg_reg": "(.*) in",
         "seperator": "\\n"
     },
     {
@@ -12,23 +12,23 @@
         "cmd": "node $FILE",
         "file_reg": "(.+):",
         "line_reg": "js:([0-9]+)",
-        "err_reg": "(.+)",
+        "msg_reg": "(.+)",
         "seperator": "todo"
     },
     {
-        "name": "_Ruby",
+        "name": "Ruby",
         "cmd": "ruby $FILE",
         "file_reg": "todo",
         "line_reg": ":([0-9]+):",
-        "err_reg": "todo",
+        "msg_reg": "todo",
         "seperator": "\\n"
     },
     {
-        "name": "_Python",
+        "name": "Python",
         "cmd": "python $FILE",
         "file_reg": "todo",
         "line_reg": "line ([0-9]+)",
-        "err_reg": "todo",
+        "msg_reg": "todo",
         "seperator": "\\n"
     }
 ]

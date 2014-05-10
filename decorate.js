@@ -47,12 +47,19 @@ define(function (require, exports, module) {
         e.style.size = 18;
         e.style.textAlign = "right";
         e.title = msg;
-        cm.setGutterMarker(line, "compiler-gutter", e);
-        cm.addLineClass(line, "background", "line-bg-error");
+        ////cm.setGutterMarker(line, "compiler-gutter", e);
         cm.addLineClass(line, "text", "line-text-error");
+        cm.addLineClass(line, "background", "cm-error"); //background  //line-bg-error
+       // cm.addLineClass(line, "text", "cm-keyword");
+       // cm.addLineClass(line, "text", "CodeMirror-selectedtext");
+        
         cm.refresh();
         setTimeout(function () {
+            var onClick = function () {
+                //cm.removeLineClass(line, "text");
+            };
             $('.line-text-error').attr('title', msg);
+            $('.line-text-error').one("click", onClick);
         }, 500);
         //('.line-text-error').onchange(function() { });
     }
