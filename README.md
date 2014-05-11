@@ -9,4 +9,11 @@ Notes:
 1. **You must have the compiler/interpreter installed within your global path for this extension to execute it.**
 2. It is possible to create own build systems via 'Edit>Edit Builder' menu item and editing opened JSON-file (you need to restart Brackets). 
 
+TODO:
+
+* Polish the Run Results panel
+* Support charactor line locations for error ranges
+* Add Java support
+* Add step-by-step debugging support
+
 Contact: @jonathanAdunlap
