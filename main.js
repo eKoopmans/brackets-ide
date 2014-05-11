@@ -83,9 +83,13 @@ define(function (require, exports, module) {
                 files.push(file);
             }
         }
-        decorate.add_errors_to_file(lastErrors); // TODO: decorate all files in above loop
-        panel.setErrors(lastErrors);
-
+        if (lastErrors.length > 0) {
+            decorate.add_errors_to_file(lastErrors); // TODO: decorate all files in above loop
+            panel.setErrors(lastErrors);
+        } else {
+            panel.setPanel(msg); // fallback if no error lines parsed
+        }
+        
     }
 
     function handle_node() {
