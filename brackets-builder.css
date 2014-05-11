@@ -18,6 +18,9 @@ height: 24px;
 .builder-table th {
     text-align: left;
 }
+.builder-table td {
+    cursor: pointer;
+}
 .CodeMirror-foldmarker {
     padding-right: 5px;
     padding-left: 5px;
