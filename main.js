@@ -66,6 +66,8 @@ define(function (require, exports, module) {
                 err = msg_reg.exec(msgs[i]);
             if (file && line && err) {
                 file = file[file.length - 1]; // get last match
+                file = file.replace(/\\/g, "/"); // Windows fix
+                console.log("file " + file);
                 line = +(line[line.length - 1]) - 1;
                 err = err[err.length - 1];
                 // err = JSON.stringify(err);
