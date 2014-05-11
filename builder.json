@@ -12,7 +12,7 @@
         "cmd": "node $FILE",
         "file_reg": "(.+):",
         "line_reg": "js:([0-9]+)",
-        "msg_reg": "(.+)",
+        "msg_reg": "[0-9]+[ |\\n]*([\\w\\W]+)",
         "seperator": "todo"
     },
     {
@@ -26,9 +26,9 @@
     {
         "name": "Python",
         "cmd": "python $FILE",
-        "file_reg": "todo",
-        "line_reg": "line ([0-9]+)",
-        "msg_reg": "todo",
-        "seperator": "\\n"
+        "file_reg": "(.*)\",",
+        "line_reg": ", line ([0-9]+)",
+        "msg_reg": ", line [0-9]+[ |\\n]*([\\w\\W]+)",
+        "seperator": "[ ]*File \""
     }
 ]

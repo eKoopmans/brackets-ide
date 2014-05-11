@@ -17,8 +17,11 @@ define(function (require, exports, module) {
     });
 
     function _processCmdOutput(data) {
-        data = JSON.stringify(data);
-        data = data.replace(/\\n/g, '<br />').replace(/\"/g, '').replace(/\\t/g, '');
+        data = data.replace(/^[ ]*(\\n)+/, ''); // remove starting new lines
+        //data = JSON.stringify(data);
+        
+        //data = data.replace(/\\n/g, '<br />').replace(/\\t/g, '');
+        data.replace(/^[ ]*\"/, '').replace(/\"[ ]*$/, ''); // remove quotes
         return data;
     }
 
@@ -59,8 +62,6 @@ define(function (require, exports, module) {
     }
     
     function cleanFilename(file) {
-       // var reg = /[\/\\]([^\/\\]+)$/g;
-        //return reg.match(file)[1];
         return file.replace(/^[\w\W]*[\\\/]/, '');
     }
 
@@ -76,12 +77,13 @@ define(function (require, exports, module) {
                 
                     panel_txt += "<tr class='panel_error'>";
                     panel_txt += "<td class='error-icon'></td>";
-                    panel_txt += "<td>" + _processCmdOutput(o[n].error) + "</td><td>" + cleanFilename(filename) + "</td><td>" + (+(o[n].line) + 1) + "</td>";
+                    panel_txt += "<td><pre>" + _processCmdOutput(o[n].error) + "</pre></td>";
+                    panel_txt += "<td>" + cleanFilename(filename) + "</td><td>" + (+(o[n].line) + 1) + "</td>";
                     panel_txt += "</tr>";
 
                     var panel_node = $(panel_txt);
                     panel_node.on("click", onPanelClickMaker(filename, o[n].line, lastErrors));
-                    console.log("panel_txt " + panel_txt);
+                    //console.log("panel_txt " + panel_txt);
                     setPanel(panel_node);
                 }
             }

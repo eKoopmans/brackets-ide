@@ -38,31 +38,27 @@ define(function (require, exports, module) {
     }
 
     function add_line_errors(line, msg) {
-        //pastLineErrors.push(line);
         var dm = DocumentManager.getCurrentDocument()._masterEditor;
         var cm = dm._codeMirror;
+        /*
         var e = document.createElement('span');
         e.appendChild(document.createTextNode("●●●"));
         e.style.color = "red";
         e.style.size = 18;
         e.style.textAlign = "right";
         e.title = msg;
-        ////cm.setGutterMarker(line, "compiler-gutter", e);
-        cm.addLineClass(line, "text", "line-text-error");
-        cm.addLineClass(line, "background", "cm-error"); //background  //line-bg-error
+        cm.setGutterMarker(line, "compiler-gutter", e);
+        */
+        var doc = cm.getDoc();
+        var marker = doc.markText({line: line, ch: 0}, {line: line + 1, ch: 0}, {className: "cm-error", clearOnEnter: true, clearWhenEmpty: true, title: msg});
+        
+        ///cm.addLineClass(line, "text", "line-text-error");
+       /// cm.addLineClass(line, "background", "cm-error");
         // cm.addLineClass(line, "text", "cm-keyword");
         // cm.addLineClass(line, "text", "CodeMirror-selectedtext");
 
         cm.refresh();
-        setTimeout(function () {
-            var onClick = function () {
-                cm.removeLineClass(line, "background", "cm-error");
-                //cm.removeLineClass(line, "text", "line-text-error"); // needed
-            };
-            $('.line-text-error').attr('title', msg);
-            $('.line-text-error').one("click", onClick);
-        }, 500);
-        //('.line-text-error').onchange(function() { });
+        return marker;
     }
 
     function setCurrentFile() {
@@ -74,17 +70,13 @@ define(function (require, exports, module) {
     function resetFile(lastFileErrors, doc) {
         var cm = doc._masterEditor._codeMirror;
         var size = cm.doc.size;
-        $('.line-text-error').attr('title', '').off();
+        
         var i;
-        for (i = 1; i < size; i++) {
-            cm.removeLineClass(i, "background", "cm-error");
-            cm.removeLineClass(i, "text", "line-text-error");
-        }
-
         while (lastFileErrors.length > 0) {
-            var cur = lastFileErrors.pop();
-            cm.removeLineClass(cur.line, "background");
-            cm.removeLineClass(cur.line, "text");
+            var marker = lastFileErrors.pop().marker;
+            if (marker) { marker.clear(); }
+            //cm.removeLineClass(i, "background", "cm-error");
+            //cm.removeLineClass(i, "text", "line-text-error");
         }
     }
 
@@ -97,7 +89,7 @@ define(function (require, exports, module) {
         for (i = 0; i < docList.length; i++) {
             var doc = docList[i];
             var file_type = doc.language._name;
-            if (curOpenLang == file_type) {
+            if (curOpenLang === file_type) {
                 var file = doc.file._path;
                 if (lastErrors[file]) {
                     resetFile(lastErrors[file], doc);
@@ -109,10 +101,6 @@ define(function (require, exports, module) {
 
     function add_errors_to_file(lastErrors) {
         setCurrentFile();
-        /*if (file !== curOpenFile) {
-            console.log("filtered out error not pertaining to file");
-            return;
-        }*/
 
         // Set Gutter
         make_gutter();
@@ -121,7 +109,7 @@ define(function (require, exports, module) {
         var i,
             n = lastErrors[curOpenFile];
         for (i = 0; n && i < n.length; i++) {
-            add_line_errors(n[i].line, n[i].error);
+            n[i].marker = add_line_errors(n[i].line, n[i].error);
         }
     }
 
