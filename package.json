@@ -1,7 +1,7 @@
 {
     "title": "Integrated Development",
     "name": "brackets-integrated-development",
-    "description": "This extension provides Brackets with integrated development capabilities like compiling, error line markers, and debugging support. Currently works with PHP, Python, JavaScript, and Ruby!",
+    "description": "This extension provides Brackets with integrated development capabilities like compiling, error line markers, and debugging support. Currently works with PHP, Python, JavaScript(Node), and Ruby!",
     "version": "0.5.4",
     "changes": "hand cursor for errors, panel shows exec errors, fixed reported line number offset by one, Py/Ruby/JS support, LineMarkers for errors",
     "homepage": "https://github.com/jadbox/brackets-integrated-development",
