@@ -57,7 +57,8 @@ define(function (require, exports, module) {
         var msgs = msg.split(seperator),
             i,
             name = DocumentManager.getCurrentDocument().file._name,
-            files = [];
+            files = [],
+            foundErrors = 0;
 
         for (i = 0; i < msgs.length; i++) {
             // filter out errors not in file
@@ -65,6 +66,7 @@ define(function (require, exports, module) {
                 line = line_reg.exec(msgs[i]),
                 err = msg_reg.exec(msgs[i]);
             if (file && line && err) {
+                foundErrors += 1;
                 file = file[file.length - 1]; // get last match
                 file = file.replace(/\\/g, "/"); // Windows fix
                 console.log("file " + file);
@@ -83,7 +85,7 @@ define(function (require, exports, module) {
                 files.push(file);
             }
         }
-        if (lastErrors.length > 0) {
+        if (foundErrors > 0) {
             decorate.add_errors_to_file(lastErrors); // TODO: decorate all files in above loop
             panel.setErrors(lastErrors);
         } else {
