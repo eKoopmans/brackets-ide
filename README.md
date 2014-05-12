@@ -17,7 +17,7 @@ TODO:
 * Add Java support
 * Add step-by-step debugging support
 
-**Pull Requests are encouraged and will be quickly reviewed for merging!**
+**Pull Requests are encouraged and will be quickly reviewed to be merged!**
 
 Contact: @jonathanAdunlap
 ![Integrated Development for Brackets](http://i.imgur.com/kHVEprN.png "Integrated Development for Brackets")
