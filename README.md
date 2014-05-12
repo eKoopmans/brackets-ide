@@ -16,6 +16,6 @@ TODO:
 * Add Java support
 * Add step-by-step debugging support
 
-**Pull Requests are welcomed!**
+**Pull Requests are welcomed and will be quickly reviewed!**
 
 Contact: @jonathanAdunlap
