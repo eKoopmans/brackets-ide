@@ -42,7 +42,7 @@ define(function (require, exports, module) {
 
     function handle_success(msg) {
         console.log("Success from compiler: " + msg);
-        if(msg.replace(/[ |\n]/g, "") === "") msg = "Success: empty output";
+        if (msg.replace(/[ |\n]/g, "") === "") { msg = "Success: empty output"; }
         panel.setPanel(msg);
     }
 
@@ -172,7 +172,7 @@ define(function (require, exports, module) {
         menu.addMenuItem('builder.open-conf');
         menu.addMenuItem('builder.build');
 
-        $("#main-toolbar div.buttons").append("<a href='#' id='Toolbar-Debug-And-Run' title='Run'></a>").on("click", handle);
+        $("<a href='#' id='Toolbar-Debug-And-Run' title='Run'></a>").appendTo("#main-toolbar div.buttons").on("click", handle);
 
         // Load css
         ExtensionUtils.loadStyleSheet(module, "brackets-builder.css");
