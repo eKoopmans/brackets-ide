@@ -4,11 +4,16 @@ This extension provides Brackets with integrated development capabilities like c
 
 Use the left Run icon or press Ctrl(Cmd)-Alt-B to build current file.
 
-Notes:
+Features:
+1. Runs the intepreter against your file and returns the output into a panel.
+2. If an error is reported, the panel shows a table list of the reported errors.
+3. Click on the errors in the list to jump to the file and error line number.
+3. It is possible to create own build systems via 'Edit>Edit Builder' menu item and editing opened JSON-file (you need to restart Brackets). 
+4. The build action will save all working set files of the same filetype automatically.
 
-1. **You must have the compiler/interpreter installed within your global path for this extension to execute it.**
-2. It is possible to create own build systems via 'Edit>Edit Builder' menu item and editing opened JSON-file (you need to restart Brackets). 
-3. The build action will save all working set files of the same filetype automatically.
+Notes:
+**You must have the compiler/interpreter installed within your global path for this extension to execute it.**
+
 
 TODO:
 
