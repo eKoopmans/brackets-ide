@@ -20,3 +20,4 @@ TODO:
 **Pull Requests are encouraged and will be quickly reviewed for merging!**
 
 Contact: @jonathanAdunlap
+![Integrated Development for Brackets](http://i.imgur.com/kHVEprN.png "Integrated Development for Brackets")
