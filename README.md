@@ -25,6 +25,7 @@ You must have the **compiler/interpreter installed** within your global path for
 * Add step-by-step debugging support
 
 **Pull Requests are encouraged and will be quickly reviewed to be merged!**
+Built upon https://github.com/Vhornets/brackets-builder for command execution, although much of it has been already rewritten.
 
 Contact: @jonathanAdunlap
 ![Integrated Development for Brackets](http://i.imgur.com/kHVEprN.png "Integrated Development for Brackets")
