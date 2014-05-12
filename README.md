@@ -8,6 +8,7 @@ Notes:
 
 1. **You must have the compiler/interpreter installed within your global path for this extension to execute it.**
 2. It is possible to create own build systems via 'Edit>Edit Builder' menu item and editing opened JSON-file (you need to restart Brackets). 
+3. The build action will save all working set files of the same filetype automatically.
 
 TODO:
 
