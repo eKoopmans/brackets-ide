@@ -15,5 +15,8 @@ TODO:
 * Support charactor line locations for error ranges
 * Add Java support
 * Add step-by-step debugging support
+* 
+
+** Pull Requests are welcomed! **
 
 Contact: @jonathanAdunlap
