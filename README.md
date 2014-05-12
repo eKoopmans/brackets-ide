@@ -11,7 +11,6 @@ Use the left Run icon or press Ctrl(Cmd)-Alt-B to build current file.
 3. Click on the errors in the list to jump to the file and error line number. The line will be marked red with the error message viewable on mouse hover.
 3. It is possible to create own build systems via 'Edit>Edit Builder' menu item and editing opened JSON-file (you need to restart Brackets). 
 4. The build action will save all working set files of the same filetype automatically.
-5. The error
 
 **Notes:**
 You must have the **compiler/interpreter installed** within your global path for this extension to execute it.
