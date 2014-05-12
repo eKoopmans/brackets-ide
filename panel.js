@@ -5,6 +5,7 @@ define(function (require, exports, module) {
     "use strict";
     var PanelManager = brackets.getModule("view/PanelManager"),
         DocumentManager = brackets.getModule("document/DocumentManager"),
+        EditorManager = brackets.getModule("editor/EditorManager"),
         decorate = require("decorate");
 
     var panel,
@@ -39,6 +40,7 @@ define(function (require, exports, module) {
                 var cm = dm._codeMirror;
                 cm.setCursor(line);
                 cm.scrollIntoView({line: line, ch: 0});
+                EditorManager.focusEditor();
             }).done();
         };
     }
