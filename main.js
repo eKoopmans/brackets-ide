@@ -42,6 +42,7 @@ define(function (require, exports, module) {
 
     function handle_success(msg) {
         console.log("Success from compiler: " + msg);
+        if(msg.replace(/[ |\n]/g, "") === "") msg = "Success: empty output";
         panel.setPanel(msg);
     }
 
