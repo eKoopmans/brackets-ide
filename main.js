@@ -119,8 +119,8 @@ define(function (require, exports, module) {
                     seperator = new RegExp(el.seperator);
                 }
             });
-            var curOpenFileEsc = curOpenFile.replace(" ", "\\ ");
-            cmd = cmd.replace("$FILE", curOpenFileEsc); //+'"'
+           // var curOpenFileEsc = curOpenFile.replace(" ", "\\ ");
+            cmd = cmd.replace("$FILE", '"' + curOpenFile + '"'); //+'"'
         }).then(function () {
             nodeConnection.domains["builder.execute"].exec(curOpenDir, cmd)
                 .fail(handle_error)
