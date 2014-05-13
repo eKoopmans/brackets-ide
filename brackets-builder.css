@@ -19,31 +19,40 @@ height: 24px;
     text-align: left;
 }
 .builder-table td {
-    cursor: pointer;
+    
+    padding: 4px;
 }
-.builder-table td pre {
+.builder-table  tr {
+    margin: 2px;
+    border-style: solid;
+    border-color: #790000;
+    border-width: 1px;
+    
+    
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+}
+.builder-table tbody tr {
+    cursor: pointer;
     
 }
-.CodeMirror-foldmarker {
-    padding-right: 5px;
-    padding-left: 5px;
-    background: #eee;
-    border: 1px solid #ddd;
-    margin-right: 3px;
-    margin-left: 3px;
-    border-radius: 3px;
-    color: #aaa;
-    cursor: pointer;
+.builder-table tbody pre {
+    background-color: transparent;
+}
+.resizable-content-error {
+    background-color: white;
+}
+.builder-content-result {
+    background-color: white;
+    padding: 5px;
 }
 .compiler-gutter { width: 1em; text-align: right; }
 .cm-error {
     background-color:#d05353;
 }
 .panel_error {
-    border-style: solid;
-    border-color: red;
-    border-width: 1px;
-    margin: 1px;
+    
 }
 .error-icon {
     background: url("images/error.svg") center center no-repeat;
