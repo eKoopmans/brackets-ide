@@ -9,7 +9,7 @@ define(function (require, exports, module) {
         decorate = require("decorate");
 
     var panel,
-        panelHTML = require('text!brackets-builder-panel.html'),
+        panelHTML = require('text!results-panel.html'),
         panelIsVisible = false;
 
     panel = PanelManager.createBottomPanel("brackets-builder-panel", $(panelHTML), 100);

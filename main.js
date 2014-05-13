@@ -27,7 +27,7 @@ define(function (require, exports, module) {
         domainPath = ExtensionUtils.getModulePath(module) + "domain",
         EditorManager = brackets.getModule("editor/EditorManager"),
         CodeMirror = brackets.getModule("thirdparty/CodeMirror2/lib/codemirror"),
-        panel = require("panel"),
+        panel = require("results-panel"),
         save = require("save"),
         decorate = require("decorate");
 

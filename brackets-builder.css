@@ -21,6 +21,9 @@ height: 24px;
 .builder-table td {
     cursor: pointer;
 }
+.builder-table td pre {
+    
+}
 .CodeMirror-foldmarker {
     padding-right: 5px;
     padding-left: 5px;
