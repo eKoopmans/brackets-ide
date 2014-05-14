@@ -41,7 +41,16 @@ height: 24px;
 .resizable-content-error {
     background-color: white;
 }
+.build-success {
+    width:100%;
+    background-color: green;
+    color: white;
+    font-weight: bold;
+    margin: 2px;
+    padding: 3px 3px 3px 12px;
+}
 .builder-content-result {
+    font-size: 80%;
     background-color: white;
     padding: 5px;
 }

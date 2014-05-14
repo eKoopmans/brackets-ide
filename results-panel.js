@@ -45,7 +45,7 @@ define(function (require, exports, module) {
         };
     }
     
-    function setPanel(data) {
+    function setPanel(data, compilerFail) {
         if (!data) {
             data = "";
             $('#builder-panel .builder-content-errors').empty();
@@ -54,12 +54,15 @@ define(function (require, exports, module) {
         }
         if (typeof data === "string") {
             $('#builder-panel .resizable-content-error').hide();
-            $('#builder-panel .builder-content-result').show().html(_processCmdOutput(data));
+            $('#builder-panel .builder-content-result').show().text(_processCmdOutput(data));
         } else {
             $('#builder-panel .builder-content-result').hide();
             $('#builder-panel .resizable-content-error').show();
             $('#builder-panel .builder-content-errors').append(data);
         }
+        
+        if (compilerFail) { $('.build-success').hide(); }
+        else { $('.build-success').show(); }
         panel.show();
     }
     
@@ -86,7 +89,7 @@ define(function (require, exports, module) {
                     var panel_node = $(panel_txt);
                     panel_node.on("click", onPanelClickMaker(filename, o[n].line, lastErrors));
                     //console.log("panel_txt " + panel_txt);
-                    setPanel(panel_node);
+                    setPanel(panel_node, true);
                 }
             }
         }

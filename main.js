@@ -43,11 +43,11 @@ define(function (require, exports, module) {
     function handle_success(msg) {
         console.log("Success from compiler: " + msg);
         if (msg.replace(/[ |\n]/g, "") === "") { msg = "Success: empty output"; }
-        panel.setPanel(msg);
+        panel.setPanel(msg, false);
     }
 
     function reset() {
-        panel.setPanel("");
+        panel.setPanel("", false);
         decorate.reset(lastErrors);
         lastErrors = {};
     }
@@ -90,7 +90,7 @@ define(function (require, exports, module) {
             decorate.add_errors_to_file(lastErrors); // TODO: decorate all files in above loop
             panel.setErrors(lastErrors);
         } else {
-            panel.setPanel(msg); // fallback if no error lines parsed
+            panel.setPanel(msg, true); // fallback if no error lines parsed
         }
         
     }
