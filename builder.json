@@ -38,5 +38,13 @@
         "line_reg": "line ([0-9]+)",
         "msg_reg": "(.*) at",
         "seperator": "\\n"
+    },
+    {
+        "name": "D",
+        "cmd": "rdmd $FILE",
+        "file_reg": "(.*)\\(",
+        "line_reg": "\\(([0-9]+)\\)",
+        "msg_reg": "Error: (.*)",
+        "seperator": "\\n"
     }
 ]

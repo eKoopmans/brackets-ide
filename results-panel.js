@@ -20,7 +20,7 @@ define(function (require, exports, module) {
     function _processCmdOutput(data) {
         data = data.replace(/^[ ]*(\\n)+/, ''); // remove starting new lines
         //data = JSON.stringify(data);
-        
+
         //data = data.replace(/\\n/g, '<br />').replace(/\\t/g, '');
         data.replace(/^[ ]*\"/, '').replace(/\"[ ]*$/, ''); // remove quotes
         return data;
@@ -39,12 +39,15 @@ define(function (require, exports, module) {
                 var dm = DocumentManager.getCurrentDocument()._masterEditor;
                 var cm = dm._codeMirror;
                 cm.setCursor(line);
-                cm.scrollIntoView({line: line, ch: 0});
+                cm.scrollIntoView({
+                    line: line,
+                    ch: 0
+                });
                 EditorManager.focusEditor();
             }).done();
         };
     }
-    
+
     function setPanel(data, compilerFail) {
         if (!data) {
             data = "";
@@ -60,27 +63,29 @@ define(function (require, exports, module) {
             $('#builder-panel .resizable-content-error').show();
             $('#builder-panel .builder-content-errors').append(data);
         }
-        
-        if (compilerFail) { $('.build-success').hide(); }
-        else { $('.build-success').show(); }
+
+        if (compilerFail) {
+            $('.build-success').hide();
+        } else {
+            $('.build-success').show();
+        }
         panel.show();
     }
-    
+
     function cleanFilename(file) {
         return file.replace(/^[\w\W]*[\\\/]/, '');
     }
 
     function setErrors(lastErrors) {
-        var panel_txt = "",
-            filename,
+        var filename,
             n;
 
         for (filename in lastErrors) {
             if (lastErrors.hasOwnProperty(filename)) {
                 var o = lastErrors[filename];
                 for (n = 0; n < o.length; n++) {
-                
-                    panel_txt += "<tr class='panel_error'>";
+
+                    var panel_txt = "<tr class='panel_error'>";
                     panel_txt += "<td class='error-icon'></td>";
                     panel_txt += "<td><pre>" + _processCmdOutput(o[n].error) + "</pre></td>";
                     panel_txt += "<td>" + cleanFilename(filename) + "</td><td>" + (+(o[n].line) + 1) + "</td>";

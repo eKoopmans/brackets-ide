@@ -42,7 +42,9 @@ define(function (require, exports, module) {
 
     function handle_success(msg) {
         console.log("Success from compiler: " + msg);
-        if (msg.replace(/[ |\n]/g, "") === "") { msg = "Success: empty output"; }
+        if (msg.replace(/[ |\n]/g, "") === "") {
+            msg = "Success: empty output";
+        }
         panel.setPanel(msg, false);
     }
 
@@ -51,10 +53,16 @@ define(function (require, exports, module) {
         decorate.reset(lastErrors);
         lastErrors = {};
     }
-
+    
+    // Get last item in list
+    function last(list) {
+        if (list.length - 1 < 0) { return undefined; }
+        return list[list.length - 1];
+    }
+    
     function handle_error(msg) {
         console.log("Fail from compiler: " + msg);
-
+        
         var msgs = msg.split(seperator),
             i,
             name = DocumentManager.getCurrentDocument().file._name,
@@ -68,12 +76,11 @@ define(function (require, exports, module) {
                 err = msg_reg.exec(msgs[i]);
             if (file && line && err) {
                 foundErrors += 1;
-                file = file[file.length - 1]; // get last match
+                file = last(file); // get last match
                 file = file.replace(/\\/g, "/"); // Windows fix
-                console.log("file " + file);
-                line = +(line[line.length - 1]) - 1;
-                err = err[err.length - 1];
-                // err = JSON.stringify(err);
+                //console.log("file " + file);
+                line = +(last(line)) - 1;
+                err = last(err);
                 if (!lastErrors[file]) {
                     lastErrors[file] = [];
                 }
@@ -81,7 +88,7 @@ define(function (require, exports, module) {
                     line: line,
                     error: err
                 });
-
+                console.log(line + " || " + err);
 
                 files.push(file);
             }
@@ -92,7 +99,7 @@ define(function (require, exports, module) {
         } else {
             panel.setPanel(msg, true); // fallback if no error lines parsed
         }
-        
+
     }
 
     function handle_node() {
@@ -120,7 +127,7 @@ define(function (require, exports, module) {
                     seperator = new RegExp(el.seperator);
                 }
             });
-           // var curOpenFileEsc = curOpenFile.replace(" ", "\\ ");
+            // var curOpenFileEsc = curOpenFile.replace(" ", "\\ ");
             cmd = cmd.replace("$FILE", '"' + curOpenFile + '"'); //+'"'
         }).then(function () {
             nodeConnection.domains["builder.execute"].exec(curOpenDir, cmd)
@@ -176,6 +183,9 @@ define(function (require, exports, module) {
 
         // Load css
         ExtensionUtils.loadStyleSheet(module, "brackets-builder.css");
+        
+        // Add D langauge support if not defined
+        require("d/dsupport")();
     });
 
 });
