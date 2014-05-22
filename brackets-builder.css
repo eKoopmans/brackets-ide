@@ -31,15 +31,23 @@ height: 24px;
 }
 .builder-table tbody tr {
     cursor: pointer;
-    border-style: solid;
+    border-style: none none solid none;
     border-color: #790000;
-    border-width: 1px;
+    border-width: 2px;
 }
-.builder-table tbody pre {
+.builder-table .resizable-content-success pre {
     background-color: transparent;
 }
+.resizable-content-success {
+    overflow: auto;
+    max-height: 100%;
+    margin-bottom: 32px;
+}
 .resizable-content-error {
+    margin-bottom: 32px;
     background-color: white;
+    overflow: auto;
+    max-height: 100%;
 }
 .build-success {
     width:100%;
