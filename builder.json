@@ -42,9 +42,9 @@
     {
         "name": "D",
         "cmd": "rdmd $FILE",
-        "file_reg": "(.*)\\(",
-        "line_reg": "\\(([0-9]+)\\)",
-        "msg_reg": "Error: (.*)",
+        "file_reg": "^(Fail from compiler: )?([^\\(]*)",
+        "line_reg": "^.*\\(([0-9]+)\\)",
+        "msg_reg": "^.*Error: (.*)",
         "seperator": "\\n"
     }
 ]

@@ -16,10 +16,10 @@ define(function (require, exports, module) {
 
             LanguageManager.defineLanguage("d", {
                 name: "d",
-                mode: "d",
+                mode: ["d", "text/x-d"],
                 fileExtensions: ["d"]
             });
-            //require("d");
+            //require("d"); // for later custom support
         }
     };
 });

@@ -2,6 +2,7 @@
 by Jonathan Dunlap
 
 TODO: Run button only shows up for supported file types
+TODO: Error on ran file won't go away if it's clicked on in the error panel before being removed.
 **/
 
 /*jslint plusplus: true, vars: true, nomen: true */
@@ -88,7 +89,7 @@ define(function (require, exports, module) {
                     line: line,
                     error: err
                 });
-                console.log(line + " || " + err);
+                //console.log(line + " || " + err);
 
                 files.push(file);
             }
