@@ -1,6 +1,6 @@
 Integrated Development for Brackets
 ================
-This extension provides Brackets with integrated development capabilities like compiling, error line markers, and debugging support. Currently works with PHP, Python, JavaScript(Node), and Ruby!
+This extension provides Brackets with integrated development capabilities like compiling, error line markers, and debugging support. Currently works with PHP, Python, Ruby, Perl and JavaScript(Node)!
 
 Use the left Run icon or press Ctrl(Cmd)-Alt-B to build current file.
 

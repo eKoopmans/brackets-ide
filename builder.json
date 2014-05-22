@@ -30,5 +30,13 @@
         "line_reg": ", line ([0-9]+)",
         "msg_reg": ", line [0-9]+[ |\\n]*([\\w\\W]+)",
         "seperator": "[ ]*File \""
+    },
+    {
+        "name": "Perl",
+        "cmd": "perl $FILE",
+        "file_reg": "at( file)? (.+) line",
+        "line_reg": "line ([0-9]+)",
+        "msg_reg": "(.*) at",
+        "seperator": "\\n"
     }
 ]
