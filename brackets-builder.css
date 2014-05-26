@@ -64,7 +64,7 @@ height: 24px;
 }
 .compiler-gutter { width: 1em; text-align: right; }
 .cm-error {
-    background-color:#d05353;
+    background-color: #4b0000;
 }
 .panel_error {
     
