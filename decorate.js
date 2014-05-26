@@ -109,7 +109,7 @@ define(function (require, exports, module) {
         var i,
             n = lastErrors[curOpenFile];
         for (i = 0; n && i < n.length; i++) {
-            n[i].marker = add_line_errors(n[i].line, n[i].error);
+            if (!n[i].marker || !n[i].marker.find()) { n[i].marker = add_line_errors(n[i].line, n[i].error); }
         }
     }
 

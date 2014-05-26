@@ -26,7 +26,8 @@ define(function (require, exports, module) {
         return data;
     }
 
-    function onPanelClickMaker(filename, line, lastErrors) {
+    function onPanelClickMaker(filename, errObj, lastErrors) {
+        var line = errObj.line;
         return function () {
             console.log("Setting doc to " + filename);
             var doc = DocumentManager.getDocumentForPath(filename);
@@ -92,7 +93,7 @@ define(function (require, exports, module) {
                     panel_txt += "</tr>";
 
                     var panel_node = $(panel_txt);
-                    panel_node.on("click", onPanelClickMaker(filename, o[n].line, lastErrors));
+                    panel_node.on("click", onPanelClickMaker(filename, o[n], lastErrors));
                     //console.log("panel_txt " + panel_txt);
                     setPanel(panel_node, true);
                 }
