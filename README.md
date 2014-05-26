@@ -20,6 +20,7 @@ You must have the **compiler/interpreter installed** within your global path for
 
 * Polish the Run Results panel (with colors of the current theme)
 * Support charactor line locations for error ranges
+* Add TypeScript & CoffeeScript support
 * Add Java support
 * Add step-by-step debugging support
 
