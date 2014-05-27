@@ -7,17 +7,32 @@ define(function (require, exports, module) {
     var _runCompile;
     var prefs;
     var DocumentManager = brackets.getModule("document/DocumentManager");
+    var ProjectManager = brackets.getModule("project/ProjectManager");
+    var basefile,
+        basefiletype;
     function run() {
-        _runCompile();
+        if (prefs.get("autocompile") && prefs.get("basefile") && prefs.get("basefiletype")) {
+            basefile = prefs.get("basefile");
+            basefiletype = prefs.get("basefiletype");
+            var root = ProjectManager.getProjectRoot()._path,
+                fullFilePath = root + basefile;
+            //var doc = DocumentManager.getDocumentForPath(fullFilePath);
+            _runCompile(fullFilePath, root, basefiletype);
+        } else { _runCompile(); }
         console.log("auto compiling");
     }
     
     function setupPrefs() {
-        if (prefs.get("autocompile")) {
+        $(DocumentManager).off("currentDocumentChange documentSaved", run);
+        
+        if (prefs.get("autocompile") && prefs.get("basefile") && prefs.get("basefiletype")) {
+            basefile = prefs.get("basefile");
+            basefiletype = prefs.get("basefiletype");
+            $(DocumentManager).on("documentSaved", run);
+        } else if (prefs.get("autocompile")) {
             $(DocumentManager).on("currentDocumentChange documentSaved", run);
-        } else {
-            $(DocumentManager).off("currentDocumentChange documentSaved", run);
         }
+        
     }
     module.exports = function (runCompile) {
         _runCompile = runCompile;

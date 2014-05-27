@@ -107,24 +107,20 @@ define(function (require, exports, module) {
         $("#Toolbar-Debug-And-Run").show();
     }
 
-    function handle_node() {
-        var curOpenDir = DocumentManager.getCurrentDocument().file._parentPath,
-            curOpenFile = DocumentManager.getCurrentDocument().file._path,
-            curOpenLang = DocumentManager.getCurrentDocument().language._name;
-
+    function handle_node(file, path, typename) {
         reset(); // remove past error markers
 
         nodeConnection.connect(true).fail(function (err) {
             console.error(ext_name_notify + "Cannot connect to node: ", err);
         }).then(function () {
-            console.log('Building ' + curOpenLang + ' in ' + curOpenFile + '...\n');
+            console.log('Building ' + file + ' in ' + path + '...\n');
 
             return nodeConnection.loadDomains([domainPath], true).fail(function (err) {
                 console.error(ext_name_notify + " Cannot register domain: ", err);
             });
         }).then(function () {
             builders.forEach(function (el) {
-                if (el.name.toLowerCase() === curOpenLang.toLowerCase()) {
+                if (el.name.toLowerCase() === typename.toLowerCase()) {
                     cmd = el.cmd;
                     line_reg = new RegExp(el.line_reg);
                     file_reg = new RegExp(el.file_reg);
@@ -133,19 +129,23 @@ define(function (require, exports, module) {
                 }
             });
             // var curOpenFileEsc = curOpenFile.replace(" ", "\\ ");
-            cmd = cmd.replace("$FILE", '"' + curOpenFile + '"'); //+'"'
+            cmd = cmd.replace("$FILE", '"' + file + '"'); //+'"'
         }).then(function () {
-            nodeConnection.domains["builder.execute"].exec(curOpenDir, cmd)
+            nodeConnection.domains["builder.execute"].exec(path, cmd)
                 .fail(handle_error)
                 .then(handle_success);
         }).done();
     }
 
-    function handle() {
+    function handle(file, path, typename) {
         if (compiling) { return; }
-        var curOpenLang = DocumentManager.getCurrentDocument().language._name;
+        if (!file || !path || !typename) {
+            file = DocumentManager.getCurrentDocument().file._path;
+            path = DocumentManager.getCurrentDocument().file._parentPath;
+            typename = DocumentManager.getCurrentDocument().language._name;
+        }
         
-        if (builders.filter(function (el) { return el.name.toLowerCase() === curOpenLang.toLowerCase(); }).length === 0) { return; }
+        if (builders.filter(function (el) { return el.name.toLowerCase() === typename.toLowerCase(); }).length === 0) { return; }
         compiling = true;
         $("#Toolbar-Debug-And-Run").hide();
         
@@ -156,13 +156,13 @@ define(function (require, exports, module) {
             filteredList = [];
         // Filter out files of a different type
         for (i = 0; i < saveFileList.length; i++) {
-            if (saveFileList[i].language._name === curOpenLang) {
+            if (saveFileList[i].language._name.toLowerCase() === typename.toLowerCase()) {
                 filteredList.push(saveFileList[i].file);
             }
         }
 
         save.saveFileList(filteredList).then(function () {
-            handle_node();
+            handle_node(file, path, typename);
         });
 
     }
