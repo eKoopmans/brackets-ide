@@ -12,12 +12,21 @@ Use the left Run icon or press Ctrl(Cmd)-Alt-B to build current file.
 3. It is possible to create own build systems via 'Edit>Edit Builder' menu item and editing opened JSON-file (you need to restart Brackets). 
 4. The build action will save all working set files of the same filetype automatically.
 
+**Auto Compile**
+In your project root preference file ".brackets.json", you can enable to the compiler to run every time you save the current file.
+
+Example .brackets.json file:
+{
+    "IDE.autocompile": true
+}
+
 **Notes:**
 You must have the **compiler/interpreter installed** within your global path for this extension to execute it.
 
 
 **TODO:**
 
+* Autocompile can be locked to a specific file
 * Polish the Run Results panel (with colors of the current theme)
 * Support charactor line locations for error ranges
 * Add TypeScript & CoffeeScript support
