@@ -4,6 +4,9 @@ This extension provides Brackets with integrated development capabilities like c
 
 Use the left Run icon or press Ctrl(Cmd)-Alt-B to build current file.
 
+**Notes:**
+You must have the **compiler/interpreter installed** within your global path for this extension to execute it.
+
 **Features:**
 
 1. Runs the intepreter against your file and returns the output into a panel.
@@ -21,10 +24,6 @@ Example .brackets.json file:
 {
     "IDE.autocompile": true
 }
-
-**Notes:**
-You must have the **compiler/interpreter installed** within your global path for this extension to execute it.
-
 
 **TODO:**
 
