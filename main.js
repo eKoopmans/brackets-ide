@@ -33,6 +33,7 @@ define(function (require, exports, module) {
         decorate = require("decorate");
 
     var cmd = '',
+        compiling = false,
         line_reg,
         file_reg,
         msg_reg,
@@ -47,6 +48,8 @@ define(function (require, exports, module) {
             msg = "Success: empty output";
         }
         panel.setPanel(msg, false);
+        compiling = false;
+        $("#Toolbar-Debug-And-Run").show();
     }
 
     function reset() {
@@ -100,7 +103,8 @@ define(function (require, exports, module) {
         } else {
             panel.setPanel(msg, true); // fallback if no error lines parsed
         }
-
+        compiling = false;
+        $("#Toolbar-Debug-And-Run").show();
     }
 
     function handle_node() {
@@ -138,7 +142,14 @@ define(function (require, exports, module) {
     }
 
     function handle() {
+        if (compiling) { return; }
         var curOpenLang = DocumentManager.getCurrentDocument().language._name;
+        
+        if (builders.filter(function (el) { return el.name.toLowerCase() === curOpenLang.toLowerCase(); }).length === 0) { return; }
+        compiling = true;
+        $("#Toolbar-Debug-And-Run").hide();
+        
+        
         // Save current file
         var saveFileList = DocumentManager.getAllOpenDocuments(),
             i,
@@ -187,6 +198,7 @@ define(function (require, exports, module) {
         
         // Add D langauge support if not defined
         require("d/dsupport")();
+        require("preferences")(handle);
     });
 
 });
