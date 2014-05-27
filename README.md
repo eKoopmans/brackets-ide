@@ -25,9 +25,16 @@ Example .brackets.json file:
     "IDE.autocompile": true
 }
 
+To lock autocompiling to a single target file, when any file is saved, use the below. Note that you will need to specify the file type as it is named in the "builder.json". This may change in the future to be autodetected.
+
+{
+    "IDE.autocompile": true,
+    "IDE.basefile": "test cases/test1.php",
+    "IDE.basefiletype": "PHP"
+}
+
 **TODO:**
 
-* Autocompile can be locked to a specific file
 * Polish the Run Results panel (with colors of the current theme)
 * Support charactor line locations for error ranges
 * Add TypeScript & CoffeeScript support
