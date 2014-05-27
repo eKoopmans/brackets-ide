@@ -17,6 +17,7 @@ Use the left Run icon or press Ctrl(Cmd)-Alt-B to build current file.
 In your project root preference file ".brackets.json", you can enable to the compiler to run every time you save the current file.
 
 Example .brackets.json file:
+
 {
     "IDE.autocompile": true
 }
