@@ -1,7 +1,7 @@
 {
     "title": "Integrated Development",
     "name": "brackets-integrated-development",
-    "description": "This extension provides Brackets with integrated development capabilities like compiling, error line markers, and debugging support. Currently works with PHP, Python, Ruby, Perl, Dlang and JavaScript(Node)!",
+    "description": "This extension provides Brackets with integrated development capabilities like compiling, error line markers, and debugging support. Currently works with PHP, Python, Ruby, Perl, Dlang and JavaScript(Node)! Supports compile-on-save with IDE.autocompile in project prefs.",
     "version": "0.5.58",
     "changes": "IDE.autocompile preference added",
     "homepage": "https://github.com/jadbox/brackets-integrated-development",
