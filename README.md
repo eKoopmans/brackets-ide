@@ -13,6 +13,7 @@ Use the left Run icon or press Ctrl(Cmd)-Alt-B to build current file.
 4. The build action will save all working set files of the same filetype automatically.
 
 **Auto Compile**
+
 In your project root preference file ".brackets.json", you can enable to the compiler to run every time you save the current file.
 
 Example .brackets.json file:
