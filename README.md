@@ -45,5 +45,5 @@ To lock autocompiling to a single target file, when any file is saved, use the b
 
 Built upon https://github.com/Vhornets/brackets-builder for command execution, although much of it has been already rewritten.
 
-Contact: @jonathanAdunlap
+Contact: @jadbox
 ![Integrated Development for Brackets](http://i.imgur.com/kHVEprN.png "Integrated Development for Brackets")
