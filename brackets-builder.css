@@ -40,14 +40,14 @@ height: 24px;
 }
 .resizable-content-success {
     overflow: auto;
-    max-height: 100%;
+    max-height: calc(100% - 28px);
     margin-bottom: 32px;
 }
 .resizable-content-error {
     margin-bottom: 32px;
     background-color: white;
     overflow: auto;
-    max-height: 100%;
+    max-height: calc(100% - 28px);
 }
 .build-success {
     width:100%;

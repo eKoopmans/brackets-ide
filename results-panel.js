@@ -60,7 +60,7 @@ define(function (require, exports, module) {
             $('#builder-panel .resizable-content-error').hide();
             $('#builder-panel .builder-content-result').show().text(_processCmdOutput(data));
         } else {
-            $('#builder-panel .builder-content-result').hide();
+            $('#builder-panel .resizable-content-success').hide();
             $('#builder-panel .resizable-content-error').show();
             $('#builder-panel .builder-content-errors').append(data);
         }
