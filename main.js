@@ -22,7 +22,7 @@ define(function (require, exports, module) {
         DocumentManager = brackets.getModule("document/DocumentManager"),
         KeyBindingManager = brackets.getModule('command/KeyBindingManager'),
         FileUtils = brackets.getModule("file/FileUtils"),
-        PanelManager = brackets.getModule("view/PanelManager"),
+        WorkspaceManager = brackets.getModule("view/WorkspaceManager"),
         Dialogs = brackets.getModule("widgets/Dialogs"),
         nodeConnection = new NodeConnection(),
         domainPath = ExtensionUtils.getModulePath(module) + "domain",
