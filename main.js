@@ -98,7 +98,7 @@ define(function (require, exports, module) {
             decorate.add_errors_to_file(lastErrors); // TODO: decorate all files in above loop
             panel.setErrors(lastErrors);
         } else {
-            panel.setPanel(msg, true); // fallback if no error lines parsed
+            panel.setErrors(msg); // fallback if no error lines parsed
         }
         compiling = false;
         $("#Toolbar-Debug-And-Run").show();

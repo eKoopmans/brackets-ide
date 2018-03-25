@@ -88,6 +88,13 @@ define(function (require, exports, module) {
         var filename,
             n;
 
+        if (typeof(lastErrors) === "string") {
+            $('#builder-panel .build-success').hide();
+            $('#builder-panel .error-table').hide();
+            $('#builder-panel .builder-content-result').text(_processCmdOutput(lastErrors));
+            return panel.show();
+        }
+
         for (filename in lastErrors) {
             if (lastErrors.hasOwnProperty(filename)) {
                 var o = lastErrors[filename];
@@ -114,6 +121,7 @@ define(function (require, exports, module) {
 
     function resetPanel() {
         $('#builder-panel .build-success').hide();
+        $('#builder-panel .error-table').hide();
         $('#builder-panel .builder-content-result').empty();
         $('#builder-panel .builder-content-errors').empty();
         panel.hide();
