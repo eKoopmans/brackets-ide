@@ -131,9 +131,11 @@ define(function (require, exports, module) {
             // var curOpenFileEsc = curOpenFile.replace(" ", "\\ ");
             cmd = cmd.replace("$FILE", '"' + file + '"'); //+'"'
         }).then(function () {
-            nodeConnection.domains["builder.execute"].exec(path, cmd)
+            var info = {};
+            nodeConnection.domains["builder.execute"].exec(path, cmd, info)
                 .fail(handle_error)
                 .then(handle_success);
+            // handle_io(info.child);
         }).done();
     }
 

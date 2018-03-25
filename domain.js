@@ -6,12 +6,12 @@
     var child_process = require("child_process"),
         domainName = "builder.execute";
     
-    function exec(directory, command, callback) {
+    function exec(directory, command, info, callback) {
         
         //directory = directory.replace(" ", "\\ ");
         console.log("exec "+command+" from "+directory);
         //directory = '"'+directory+'"';
-        child_process.exec(command, { cwd: directory}, function (err, stdout, stderr) {
+        info.child = child_process.exec(command, { cwd: directory}, function (err, stdout, stderr) {
             //console.log("returned: " + stdout);
             //console.log("err: " + err);
             if(err && !stderr) { stderr = stdout; }
