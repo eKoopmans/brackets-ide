@@ -16,6 +16,11 @@ define(function (require, exports, module) {
     $('#builder-panel .close').on('click', function () {
         panel.hide();
     });
+    var content = $('#builder-panel .builder-content-result');
+    content.height(content.scrollHeight + 'px').on('input', function () {
+        this.style.height = 'auto';
+        this.style.height = this.scrollHeight + 'px';
+    });
 
     function _processCmdOutput(data) {
         data = data.replace(/^[ ]*(\\n)+/, ''); // remove starting new lines
