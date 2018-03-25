@@ -26,6 +26,16 @@ define(function (require, exports, module) {
         return data;
     }
 
+    function cleanFilename(file) {
+        return file.replace(/^[\w\W]*[\\\/]/, '');
+    }
+
+    function handleEmptyContent(element, msg) {
+        if (element.text().replace(/[ |\n]/g, "") === "") {
+            element.text(msg + ": empty output");
+        }
+    }
+
     function onPanelClickMaker(filename, errObj, lastErrors) {
         var line = errObj.line;
         return function () {
@@ -50,12 +60,6 @@ define(function (require, exports, module) {
     }
 
     function setPanel(data, compilerFail) {
-        if (!data) {
-            data = "";
-            $('#builder-panel .builder-content-errors').empty();
-            panel.hide();
-            return;
-        }
         if (typeof data === "string") {
             $('#builder-panel .resizable-content-error').hide();
             $('#builder-panel .builder-content-result').show().text(_processCmdOutput(data));
@@ -73,8 +77,11 @@ define(function (require, exports, module) {
         panel.show();
     }
 
-    function cleanFilename(file) {
-        return file.replace(/^[\w\W]*[\\\/]/, '');
+    function setSuccess() {
+        $('#builder-panel .build-success').show();
+        $('#builder-panel .error-table').hide();
+        handleEmptyContent($('#builder-panel .builder-content-result'), "Sucess");
+        panel.show();
     }
 
     function setErrors(lastErrors) {
@@ -95,14 +102,27 @@ define(function (require, exports, module) {
                     var panel_node = $(panel_txt);
                     panel_node.on("click", onPanelClickMaker(filename, o[n], lastErrors));
                     //console.log("panel_txt " + panel_txt);
-                    setPanel(panel_node, true);
+                    $('#builder-panel .builder-content-errors').append(panel_node);
                 }
             }
         }
+        $('#builder-panel .build-success').hide();
+        $('#builder-panel .error-table').show();
+        handleEmptyContent($('#builder-panel .builder-content-result'), "Fail");
+        panel.show();
+    }
+
+    function resetPanel() {
+        $('#builder-panel .build-success').hide();
+        $('#builder-panel .builder-content-result').empty();
+        $('#builder-panel .builder-content-errors').empty();
+        panel.hide();
     }
 
     module.exports = {
         setPanel: setPanel,
-        setErrors: setErrors
+        setSuccess: setSuccess,
+        setErrors: setErrors,
+        resetPanel: resetPanel
     };
 });

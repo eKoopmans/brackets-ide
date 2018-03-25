@@ -35,19 +35,12 @@ height: 24px;
     border-color: #790000;
     border-width: 2px;
 }
-.builder-table .resizable-content-success pre {
-    background-color: transparent;
-}
-.resizable-content-success {
+.resizable-content {
     overflow: auto;
     max-height: calc(100% - 28px);
-    margin-bottom: 32px;
 }
-.resizable-content-error {
-    margin-bottom: 32px;
+.error-table {
     background-color: white;
-    overflow: auto;
-    max-height: calc(100% - 28px);
 }
 .build-success {
     width:100%;
