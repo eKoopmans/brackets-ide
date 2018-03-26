@@ -196,12 +196,16 @@ define(function (require, exports, module) {
             console.log(data);
             panel.setPanel(data);
         });
+
+        // Initialize nodeConnection and panel.
         nodePromise = nodeConnection.connect(true).fail(function (err) {
             console.error(ext_name_notify + "Cannot connect to node: ", err);
         }).then(function () {
             return nodeConnection.loadDomains([domainPath], true).fail(function (err) {
                 console.error(ext_name_notify + " Cannot register domain: ", err);
             });
+        }).then(function () {
+            panel.initPanel(nodeConnection.domains["builder"]);
         });
     });
 

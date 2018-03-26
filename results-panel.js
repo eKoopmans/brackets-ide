@@ -9,6 +9,7 @@ define(function (require, exports, module) {
         decorate = require("decorate");
 
     var panel,
+        domain,
         panelHTML = require('text!results-panel.html'),
         panelIsVisible = false;
 
@@ -61,12 +62,15 @@ define(function (require, exports, module) {
         }
     }
 
-    function setContentText(val, mergeInvis) {
-        if (mergeInvis) {
-            val += invis.val() + '\n';
+    function setContentText(val, sendInput) {
+        if (sendInput) {
+            var msg = invis.val() + '\n';
+            contentText = (val + msg).replace(/\r\n/g, '\n');
             invis.val('');
+            domain.write(msg);
+        } else {
+            contentText = val.replace(/\r\n/g, '\n');
         }
-        contentText = val.replace(/\r\n/g, '\n');
         content.val(contentText + invis.val()).trigger('input');
     }
 
@@ -143,6 +147,10 @@ define(function (require, exports, module) {
         };
     }
 
+    function initPanel(_domain) {
+        domain = _domain;
+    }
+
     function setPanel(data) {
         setContentText(contentText + data);
         panel.show();
@@ -200,6 +208,7 @@ define(function (require, exports, module) {
     }
 
     module.exports = {
+        initPanel: initPanel,
         setPanel: setPanel,
         setSuccess: setSuccess,
         setErrors: setErrors,
