@@ -18,8 +18,10 @@ define(function (require, exports, module) {
     });
     var content = $('#builder-panel .builder-content-result');
     content.height(content.scrollHeight + 'px').on('input', function () {
-        this.style.height = 'auto';
-        this.style.height = this.scrollHeight + 'px';
+        window.setTimeout(function () {
+            this.style.height = 'auto';
+            this.style.height = this.scrollHeight + 'px';
+        }.bind(this), 0);
     });
 
     function _processCmdOutput(data) {
@@ -36,8 +38,8 @@ define(function (require, exports, module) {
     }
 
     function handleEmptyContent(element, msg) {
-        if (element.text().replace(/[ |\n]/g, "") === "") {
-            element.text(msg + ": empty output");
+        if (element.val().replace(/[ |\n]/g, "") === "") {
+            element.val(msg + ": empty output").trigger('input');
         }
     }
 
@@ -65,14 +67,14 @@ define(function (require, exports, module) {
     }
 
     function setPanel(data) {
-        content.val(content.val() + data);
+        content.val(content.val() + data).trigger('input');
         panel.show();
     }
 
     function setSuccess() {
         $('#builder-panel .build-success').show();
         $('#builder-panel .error-table').hide();
-        handleEmptyContent($('#builder-panel .builder-content-result'), "Sucess");
+        handleEmptyContent(content, "Sucess");
         panel.show();
     }
 
@@ -83,7 +85,7 @@ define(function (require, exports, module) {
         if (typeof(lastErrors) === "string") {
             $('#builder-panel .build-success').hide();
             $('#builder-panel .error-table').hide();
-            $('#builder-panel .builder-content-result').text(_processCmdOutput(lastErrors));
+            content.val(_processCmdOutput(lastErrors)).trigger('input');
             return panel.show();
         }
 
@@ -107,14 +109,14 @@ define(function (require, exports, module) {
         }
         $('#builder-panel .build-success').hide();
         $('#builder-panel .error-table').show();
-        handleEmptyContent($('#builder-panel .builder-content-result'), "Fail");
+        handleEmptyContent(content, "Fail");
         panel.show();
     }
 
     function resetPanel() {
         $('#builder-panel .build-success').hide();
         $('#builder-panel .error-table').hide();
-        $('#builder-panel .builder-content-result').empty();
+        content.val('').trigger('input');
         $('#builder-panel .builder-content-errors').empty();
         panel.hide();
     }

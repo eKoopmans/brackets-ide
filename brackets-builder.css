@@ -50,6 +50,8 @@
     width: 100%;
     box-sizing: border-box;
     overflow-y: hidden;
+    font-family: monospace;
+    font-size: 90%;
 }
 .invisible-input {
     position: absolute;
