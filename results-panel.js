@@ -56,9 +56,9 @@ define(function (require, exports, module) {
         return file.replace(/^[\w\W]*[\\\/]/, '');
     }
 
-    function handleEmptyContent(element, msg) {
-        if (element.val().replace(/[ |\n]/g, "") === "") {
-            element.val(msg + ": empty output").trigger('input');
+    function handleEmptyContent(prefix) {
+        if (content.val().replace(/[ |\n]/g, "") === "") {
+            setContentText(prefix + ": empty output");
         }
     }
 
@@ -159,7 +159,7 @@ define(function (require, exports, module) {
     function setSuccess() {
         $('#builder-panel .build-success').show();
         $('#builder-panel .error-table').hide();
-        handleEmptyContent(content, "Sucess");
+        handleEmptyContent("Sucess");
         panel.show();
     }
 
@@ -194,7 +194,7 @@ define(function (require, exports, module) {
         }
         $('#builder-panel .build-success').hide();
         $('#builder-panel .error-table').show();
-        handleEmptyContent(content, "Fail");
+        handleEmptyContent("Fail");
         panel.show();
     }
 
