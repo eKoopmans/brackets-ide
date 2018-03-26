@@ -128,7 +128,7 @@ define(function (require, exports, module) {
             // var curOpenFileEsc = curOpenFile.replace(" ", "\\ ");
             cmd = cmd.replace("$FILE", '"' + file + '"'); //+'"'
         }).then(function () {
-            nodeConnection.domains["builder.execute"].exec(path, cmd)
+            nodeConnection.domains["builder"].exec(path, cmd)
                 .fail(handle_error)
                 .then(handle_success);
         }).done();
@@ -188,7 +188,7 @@ define(function (require, exports, module) {
         menu.addMenuItem('builder.open-conf');
         menu.addMenuItem('builder.build');
 
-        $("<a href='#' id='Toolbar-Debug-And-Run' title='Run'></a>").appendTo("#main-toolbar div.buttons").on("click", handle);
+        $("<a href='#' id='Toolbar-Debug-And-Run' title='Run in IDE'></a>").appendTo("#main-toolbar div.buttons").on("click", handle);
 
         // Load css
         ExtensionUtils.loadStyleSheet(module, "brackets-builder.css");
@@ -196,6 +196,12 @@ define(function (require, exports, module) {
         // Add D langauge support if not defined
         require("d/dsupport")();
         require("preferences")(handle);
+
+        // Add listener for builder:data event.
+        nodeConnection.on("builder:data", function (e, data) {
+            console.log(data);
+            // panel.setPanel(data);
+        });
     });
 
 });
