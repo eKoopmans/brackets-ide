@@ -120,7 +120,7 @@ define(function (require, exports, module) {
                 }
             });
             // var curOpenFileEsc = curOpenFile.replace(" ", "\\ ");
-            cmd = cmd.replace("$FILE", '"' + file + '"'); //+'"'
+            cmd = cmd.replace(/\$FILE/g, '"' + file + '"'); //+'"'
         }).then(function () {
             nodeConnection.domains["builder"].exec(path, cmd)
                 .fail(handle_error)
