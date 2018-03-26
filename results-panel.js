@@ -12,17 +12,31 @@ define(function (require, exports, module) {
         panelHTML = require('text!results-panel.html'),
         panelIsVisible = false;
 
+    var content,
+        invis,
+        bypass = [16, 17, 18, 19, 20, 27, 33, 34, 35, 37, 38, 39, 40, 45, 91, 92, 93, 144, 145],
+        contentText = '';
+
     panel = WorkspaceManager.createBottomPanel("brackets-builder-panel", $(panelHTML), 100);
     $('#builder-panel .close').on('click', function () {
         panel.hide();
     });
-    var content = $('#builder-panel .builder-content-result');
+
+    // Get refs.
+    content = $('#builder-panel .builder-content-result');
+    invis = $('#builder-panel .invisible-input');
+
+    // Auto-resize textarea.
     content.height(content.scrollHeight + 'px').on('input', function () {
         window.setTimeout(function () {
             this.style.height = 'auto';
             this.style.height = this.scrollHeight + 'px';
         }.bind(this), 0);
     });
+
+    // Special handlers for keyboard input.
+    content.on("keydown", handleInput);
+    invis.on("input keyup", handleInvis);
 
     function _processCmdOutput(data) {
         data = data.replace(/^[ ]*(\\n)+/, ''); // remove starting new lines
@@ -41,6 +55,61 @@ define(function (require, exports, module) {
         if (element.val().replace(/[ |\n]/g, "") === "") {
             element.val(msg + ": empty output").trigger('input');
         }
+    }
+
+    function setContentText(val, mergeInvis) {
+        if (mergeInvis) {
+            val += invis.val() + '\n';
+            invis.val('');
+        }
+        contentText = val;
+        content.val(contentText + invis.val()).trigger('input');
+    }
+
+    function handleInput(e) {
+        var modKey = e.altKey || (e.ctrlKey || e.metaKey) && (e.code !== 'KeyV' && e.code !== 'KeyX');
+        if (modKey || bypass.indexOf(e.keyCode) !== -1) {
+            return;
+        }
+
+        // Handle home key.
+        if (e.keyCode === 36) {
+            var end = e.shiftKey ? content.selectionEnd : contentText.length;
+            content.setSelectionRange(contentText.length, end);
+            invis.setSelectionRange(0,end - contentText.length);
+            return e.preventDefault();
+        }
+
+        // Handle enter key.
+        if (e.keyCode === 13) {
+            setContentText(contentText, true);
+            return e.preventDefault();
+        }
+
+        if (content.selectionStart < contentText.length) {
+            content.setSelectionRange(content.val().length, content.val().length);
+        }
+        invis.selectionStart = content.selectionStart - contentText.length;
+        invis.selectionEnd = content.selectionEnd - contentText.length;
+
+        // Handle tabs.
+        if (e.keyCode === 9) {
+            sel = [invis.selectionStart, invis.selectionEnd];
+            invis.val(invis.val().slice(0,sel[0]) + '\t' + invis.val().slice(sel[1]));
+            invis.setSelectionRange(sel[0]+1, sel[0]+1);
+            invis.dispatchEvent(new Event('invis'));
+            return e.preventDefault();
+        }
+
+        invis.focus();
+        return;
+    }
+
+    function handleInvis(e) {
+        setContentText(contentText);
+        content.selectionStart = invis.selectionStart + contentText.length;
+        content.selectionEnd = invis.selectionEnd + contentText.length;
+        content.focus();
     }
 
     function onPanelClickMaker(filename, errObj, lastErrors) {
@@ -67,7 +136,7 @@ define(function (require, exports, module) {
     }
 
     function setPanel(data) {
-        content.val(content.val() + data).trigger('input');
+        setContentText(contentText + data);
         panel.show();
     }
 
@@ -85,7 +154,7 @@ define(function (require, exports, module) {
         if (typeof(lastErrors) === "string") {
             $('#builder-panel .build-success').hide();
             $('#builder-panel .error-table').hide();
-            content.val(_processCmdOutput(lastErrors)).trigger('input');
+            setContentText(_processCmdOutput(lastErrors));
             return panel.show();
         }
 
@@ -116,8 +185,9 @@ define(function (require, exports, module) {
     function resetPanel() {
         $('#builder-panel .build-success').hide();
         $('#builder-panel .error-table').hide();
-        content.val('').trigger('input');
         $('#builder-panel .builder-content-errors').empty();
+        invis.val('');
+        setContentText('');
         panel.hide();
     }
 
