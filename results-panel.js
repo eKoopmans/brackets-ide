@@ -1,5 +1,5 @@
 /*jslint plusplus: true, vars: true, nomen: true */
-/*global define, brackets, console, setTimeout, $, document, alert */
+/*global define, brackets, console, setTimeout, $, document, alert, window, Event */
 
 define(function (require, exports, module) {
     "use strict";
@@ -14,6 +14,8 @@ define(function (require, exports, module) {
 
     var content,
         invis,
+        content0,
+        invis0,
         bypass = [16, 17, 18, 19, 20, 27, 33, 34, 35, 37, 38, 39, 40, 45, 91, 92, 93, 144, 145],
         contentText = '';
 
@@ -25,6 +27,8 @@ define(function (require, exports, module) {
     // Get refs.
     content = $('#builder-panel .builder-content-result');
     invis = $('#builder-panel .invisible-input');
+    content0 = content[0];
+    invis0 = invis[0];
 
     // Auto-resize textarea.
     content.height(content.scrollHeight + 'px').on('input', function () {
@@ -62,7 +66,7 @@ define(function (require, exports, module) {
             val += invis.val() + '\n';
             invis.val('');
         }
-        contentText = val;
+        contentText = val.replace(/\r\n/g, '\n');
         content.val(contentText + invis.val()).trigger('input');
     }
 
@@ -74,9 +78,9 @@ define(function (require, exports, module) {
 
         // Handle home key.
         if (e.keyCode === 36) {
-            var end = e.shiftKey ? content.selectionEnd : contentText.length;
-            content.setSelectionRange(contentText.length, end);
-            invis.setSelectionRange(0,end - contentText.length);
+            var end = e.shiftKey ? content0.selectionEnd : contentText.length;
+            invis0.setSelectionRange(0,end - contentText.length);
+            content0.setSelectionRange(contentText.length, end);
             return e.preventDefault();
         }
 
@@ -86,18 +90,20 @@ define(function (require, exports, module) {
             return e.preventDefault();
         }
 
-        if (content.selectionStart < contentText.length) {
-            content.setSelectionRange(content.val().length, content.val().length);
+        if (content0.selectionStart < contentText.length) {
+            content0.setSelectionRange(content.val().length, content.val().length);
         }
-        invis.selectionStart = content.selectionStart - contentText.length;
-        invis.selectionEnd = content.selectionEnd - contentText.length;
+        invis0.setSelectionRange(
+            content0.selectionStart - contentText.length,
+            content0.selectionEnd - contentText.length
+        );
 
         // Handle tabs.
         if (e.keyCode === 9) {
-            sel = [invis.selectionStart, invis.selectionEnd];
+            var sel = [invis0.selectionStart, invis0.selectionEnd];
             invis.val(invis.val().slice(0,sel[0]) + '\t' + invis.val().slice(sel[1]));
-            invis.setSelectionRange(sel[0]+1, sel[0]+1);
-            invis.dispatchEvent(new Event('invis'));
+            invis0.setSelectionRange(sel[0]+1, sel[0]+1);
+            invis0.dispatchEvent(new Event('input'));
             return e.preventDefault();
         }
 
@@ -107,8 +113,10 @@ define(function (require, exports, module) {
 
     function handleInvis(e) {
         setContentText(contentText);
-        content.selectionStart = invis.selectionStart + contentText.length;
-        content.selectionEnd = invis.selectionEnd + contentText.length;
+        content0.setSelectionRange(
+            invis0.selectionStart + contentText.length,
+            invis0.selectionEnd + contentText.length
+        );
         content.focus();
     }
 
