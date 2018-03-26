@@ -16,7 +16,6 @@
             callback(err ? stderr : undefined, err ? undefined : stdout);
         });
         child.stdout.on('data', function(data) {
-            console.log('data!');
             DomainManager.emitEvent(domainName, "data", data);
         });
     }

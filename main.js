@@ -34,6 +34,7 @@ define(function (require, exports, module) {
 
     var cmd = '',
         compiling = false,
+        nodePromise,
         line_reg,
         file_reg,
         msg_reg,
@@ -107,15 +108,8 @@ define(function (require, exports, module) {
     function handle_node(file, path, typename) {
         reset(); // remove past error markers
 
-        nodeConnection.connect(true).fail(function (err) {
-            console.error(ext_name_notify + "Cannot connect to node: ", err);
-        }).then(function () {
+        nodePromise = nodePromise.then(function () {
             console.log('Building ' + file + ' in ' + path + '...\n');
-
-            return nodeConnection.loadDomains([domainPath], true).fail(function (err) {
-                console.error(ext_name_notify + " Cannot register domain: ", err);
-            });
-        }).then(function () {
             builders.forEach(function (el) {
                 if (el.name.toLowerCase() === typename.toLowerCase()) {
                     cmd = el.cmd;
@@ -200,7 +194,14 @@ define(function (require, exports, module) {
         // Add listener for builder:data event.
         nodeConnection.on("builder:data", function (e, data) {
             console.log(data);
-            // panel.setPanel(data);
+            panel.setPanel(data);
+        });
+        nodePromise = nodeConnection.connect(true).fail(function (err) {
+            console.error(ext_name_notify + "Cannot connect to node: ", err);
+        }).then(function () {
+            return nodeConnection.loadDomains([domainPath], true).fail(function (err) {
+                console.error(ext_name_notify + " Cannot register domain: ", err);
+            });
         });
     });
 
