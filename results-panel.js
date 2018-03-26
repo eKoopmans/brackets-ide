@@ -64,21 +64,8 @@ define(function (require, exports, module) {
         };
     }
 
-    function setPanel(data, compilerFail) {
-        if (typeof data === "string") {
-            $('#builder-panel .resizable-content-error').hide();
-            $('#builder-panel .builder-content-result').show().text(_processCmdOutput(data));
-        } else {
-            $('#builder-panel .resizable-content-success').hide();
-            $('#builder-panel .resizable-content-error').show();
-            $('#builder-panel .builder-content-errors').append(data);
-        }
-
-        if (compilerFail) {
-            $('.build-success').hide();
-        } else {
-            $('.build-success').show();
-        }
+    function setPanel(data) {
+        content.val(content.val() + data);
         panel.show();
     }
 
