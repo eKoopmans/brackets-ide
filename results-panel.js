@@ -6,6 +6,7 @@ define(function (require, exports, module) {
     var WorkspaceManager = brackets.getModule("view/WorkspaceManager"),
         DocumentManager = brackets.getModule("document/DocumentManager"),
         EditorManager = brackets.getModule("editor/EditorManager"),
+        main = require("main"),
         decorate = require("decorate");
 
     var panel,
@@ -21,9 +22,7 @@ define(function (require, exports, module) {
         contentText = '';
 
     panel = WorkspaceManager.createBottomPanel("brackets-builder-panel", $(panelHTML), 100);
-    $('#builder-panel .close').on('click', function () {
-        panel.hide();
-    });
+    $('#builder-panel .close').on('click', function () { main.reset() });
 
     // Get refs.
     content = $('#builder-panel .builder-content-result');
