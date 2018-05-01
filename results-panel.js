@@ -33,6 +33,7 @@ define(function (require, exports, module) {
     // Auto-resize textarea.
     content.height(content.scrollHeight + 'px').on('input', function () {
         window.setTimeout(function () {
+            this.style.height = '';
             this.style.height = this.scrollHeight + 'px';
         }.bind(this), 0);
     });
