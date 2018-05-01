@@ -5,6 +5,7 @@
 
     var child_process = require("child_process"),
         child,
+        killed = false,
         DomainManager = null,
         domainName = "builder";
     
@@ -13,7 +14,11 @@
         child = child_process.exec(command, {cwd: directory}, function (err, stdout, stderr) {
             child = undefined;
             if(err && !stderr) { stderr = stdout; }
-            callback(err ? stderr : undefined, err ? undefined : stdout);
+            if (killed) {
+                killed = false;
+            } else {
+                callback(err ? stderr : undefined, err ? undefined : stdout);
+            }
         });
         child.stdout.on('data', function(data) {
             DomainManager.emitEvent(domainName, "data", data);
@@ -23,6 +28,13 @@
     function write(data) {
         if (child) {
             child.stdin.write(data);
+        }
+    }
+
+    function kill() {
+        if (child) {
+            killed = true;
+            child.kill();
         }
     }
 
@@ -54,6 +66,7 @@
                 name: "data",
                 type: "string"
             }]);
+        DomainManager.registerCommand(domainName, "kill", kill, false, "Kill active process");
         DomainManager.registerEvent(domainName, "data",
             [{
                 name: "data",

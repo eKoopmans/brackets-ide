@@ -47,10 +47,13 @@ define(function (require, exports, module) {
         console.log("Success from compiler: " + msg);
         panel.setSuccess();
         compiling = false;
-        $("#Toolbar-Debug-And-Run").show();
     }
 
-    function reset() {
+    function reset(keepChild) {
+        if (!keepChild) {
+            nodeConnection.domains["builder"].kill();
+            compiling = false;
+        }
         panel.resetPanel();
         decorate.reset(lastErrors);
         lastErrors = {};
@@ -102,13 +105,11 @@ define(function (require, exports, module) {
             panel.setErrors(msg); // fallback if no error lines parsed
         }
         compiling = false;
-        $("#Toolbar-Debug-And-Run").show();
     }
 
     function handle_node(file, path, typename) {
-        reset(); // remove past error markers
-
         nodePromise = nodePromise.then(function () {
+            reset();    // Kill active process and remove past error markers.
             console.log('Building ' + file + ' in ' + path + '...\n');
             builders.forEach(function (el) {
                 if (el.name.toLowerCase() === typename.toLowerCase()) {
@@ -129,7 +130,7 @@ define(function (require, exports, module) {
     }
 
     function handle(file, path, typename) {
-        if (compiling) { return; }
+        if (compiling) { reset(); }
         if (!file || !path || !typename) {
             file = DocumentManager.getCurrentDocument().file._path;
             path = DocumentManager.getCurrentDocument().file._parentPath;
@@ -138,8 +139,6 @@ define(function (require, exports, module) {
         
         if (builders.filter(function (el) { return el.name.toLowerCase() === typename.toLowerCase(); }).length === 0) { return; }
         compiling = true;
-        $("#Toolbar-Debug-And-Run").hide();
-        
         
         // Save current file
         var saveFileList = DocumentManager.getAllOpenDocuments(),
@@ -193,7 +192,7 @@ define(function (require, exports, module) {
 
         // Add listener for builder:data event.
         nodeConnection.on("builder:data", function (e, data) {
-            console.log(data);
+            console.log('Data from compiler:\n' + data);
             panel.setPanel(data);
         });
 
@@ -209,4 +208,8 @@ define(function (require, exports, module) {
         });
     });
 
+    exports.reset = reset;
+    module.exports = {
+        reset: reset
+    };
 });
