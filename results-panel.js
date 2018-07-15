@@ -3,7 +3,7 @@
 
 define(function (require, exports, module) {
     "use strict";
-    var PanelManager = brackets.getModule("view/PanelManager"),
+    var WorkspaceManager = brackets.getModule("view/WorkspaceManager"),
         DocumentManager = brackets.getModule("document/DocumentManager"),
         EditorManager = brackets.getModule("editor/EditorManager"),
         decorate = require("decorate");
@@ -12,7 +12,7 @@ define(function (require, exports, module) {
         panelHTML = require('text!results-panel.html'),
         panelIsVisible = false;
 
-    panel = PanelManager.createBottomPanel("brackets-builder-panel", $(panelHTML), 100);
+    panel = WorkspaceManager.createBottomPanel("brackets-builder-panel", $(panelHTML), 100);
     $('#builder-panel .close').on('click', function () {
         panel.hide();
     });
