@@ -34,6 +34,7 @@ define(function (require, exports, module) {
 
     var cmd = '',
         compiling = false,
+        nodePromise,
         line_reg,
         file_reg,
         msg_reg,
@@ -44,16 +45,16 @@ define(function (require, exports, module) {
 
     function handle_success(msg) {
         console.log("Success from compiler: " + msg);
-        if (msg.replace(/[ |\n]/g, "") === "") {
-            msg = "Success: empty output";
-        }
-        panel.setPanel(msg, false);
+        panel.setSuccess();
         compiling = false;
-        $("#Toolbar-Debug-And-Run").show();
     }
 
-    function reset() {
-        panel.setPanel("", false);
+    function reset(keepChild) {
+        if (!keepChild) {
+            nodeConnection.domains["builder"].kill();
+            compiling = false;
+        }
+        panel.resetPanel();
         decorate.reset(lastErrors);
         lastErrors = {};
     }
@@ -101,24 +102,15 @@ define(function (require, exports, module) {
             decorate.add_errors_to_file(lastErrors); // TODO: decorate all files in above loop
             panel.setErrors(lastErrors);
         } else {
-            panel.setPanel(msg, true); // fallback if no error lines parsed
+            panel.setErrors(msg); // fallback if no error lines parsed
         }
         compiling = false;
-        $("#Toolbar-Debug-And-Run").show();
     }
 
     function handle_node(file, path, typename) {
-        reset(); // remove past error markers
-
-        nodeConnection.connect(true).fail(function (err) {
-            console.error(ext_name_notify + "Cannot connect to node: ", err);
-        }).then(function () {
+        nodePromise = nodePromise.then(function () {
+            reset();    // Kill active process and remove past error markers.
             console.log('Building ' + file + ' in ' + path + '...\n');
-
-            return nodeConnection.loadDomains([domainPath], true).fail(function (err) {
-                console.error(ext_name_notify + " Cannot register domain: ", err);
-            });
-        }).then(function () {
             builders.forEach(function (el) {
                 if (el.name.toLowerCase() === typename.toLowerCase()) {
                     cmd = el.cmd;
@@ -129,16 +121,16 @@ define(function (require, exports, module) {
                 }
             });
             // var curOpenFileEsc = curOpenFile.replace(" ", "\\ ");
-            cmd = cmd.replace("$FILE", '"' + file + '"'); //+'"'
+            cmd = cmd.replace(/\$FILE/g, '"' + file + '"'); //+'"'
         }).then(function () {
-            nodeConnection.domains["builder.execute"].exec(path, cmd)
+            nodeConnection.domains["builder"].exec(path, cmd)
                 .fail(handle_error)
                 .then(handle_success);
         }).done();
     }
 
     function handle(file, path, typename) {
-        if (compiling) { return; }
+        if (compiling) { reset(); }
         if (!file || !path || !typename) {
             file = DocumentManager.getCurrentDocument().file._path;
             path = DocumentManager.getCurrentDocument().file._parentPath;
@@ -147,8 +139,6 @@ define(function (require, exports, module) {
         
         if (builders.filter(function (el) { return el.name.toLowerCase() === typename.toLowerCase(); }).length === 0) { return; }
         compiling = true;
-        $("#Toolbar-Debug-And-Run").hide();
-        
         
         // Save current file
         var saveFileList = DocumentManager.getAllOpenDocuments(),
@@ -191,7 +181,7 @@ define(function (require, exports, module) {
         menu.addMenuItem('builder.open-conf');
         menu.addMenuItem('builder.build');
 
-        $("<a href='#' id='Toolbar-Debug-And-Run' title='Run'></a>").appendTo("#main-toolbar div.buttons").on("click", handle);
+        $("<a href='#' id='Toolbar-Debug-And-Run' title='Run in IDE'></a>").appendTo("#main-toolbar div.buttons").on("click", handle);
 
         // Load css
         ExtensionUtils.loadStyleSheet(module, "brackets-builder.css");
@@ -199,6 +189,27 @@ define(function (require, exports, module) {
         // Add D langauge support if not defined
         require("d/dsupport")();
         require("preferences")(handle);
+
+        // Add listener for builder:data event.
+        nodeConnection.on("builder:data", function (e, data) {
+            console.log('Data from compiler:\n' + data);
+            panel.setPanel(data);
+        });
+
+        // Initialize nodeConnection and panel.
+        nodePromise = nodeConnection.connect(true).fail(function (err) {
+            console.error(ext_name_notify + "Cannot connect to node: ", err);
+        }).then(function () {
+            return nodeConnection.loadDomains([domainPath], true).fail(function (err) {
+                console.error(ext_name_notify + " Cannot register domain: ", err);
+            });
+        }).then(function () {
+            panel.initPanel(nodeConnection.domains["builder"]);
+        });
     });
 
+    exports.reset = reset;
+    module.exports = {
+        reset: reset
+    };
 });

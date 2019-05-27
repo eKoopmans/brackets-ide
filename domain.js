@@ -4,29 +4,45 @@
     "use strict";
 
     var child_process = require("child_process"),
-        domainName = "builder.execute";
+        child,
+        killed = false,
+        DomainManager = null,
+        domainName = "builder";
     
     function exec(directory, command, callback) {
-        
-        //directory = directory.replace(" ", "\\ ");
         console.log("exec "+command+" from "+directory);
-        //directory = '"'+directory+'"';
-        child_process.exec(command, { cwd: directory}, function (err, stdout, stderr) {
-            //console.log("returned: " + stdout);
-            //console.log("err: " + err);
+        child = child_process.exec(command, {cwd: directory}, function (err, stdout, stderr) {
+            child = undefined;
             if(err && !stderr) { stderr = stdout; }
-            //callback(err, stdout);
-            callback(err ? stderr : undefined, err ? undefined : stdout);
+            if (killed) {
+                killed = false;
+            } else {
+                callback(err ? stderr : undefined, err ? undefined : stdout);
+            }
+        });
+        child.stdout.on('data', function(data) {
+            DomainManager.emitEvent(domainName, "data", data);
         });
     }
 
+    function write(data) {
+        if (child) {
+            child.stdin.write(data);
+        }
+    }
+
+    function kill() {
+        if (child) {
+            killed = true;
+            child.kill();
+        }
+    }
+
     exports.exec = exec;
-    exports.init = function (DomainManager) {
+    exports.init = function (_domainManager) {
+        DomainManager = _domainManager;
         if (!DomainManager.hasDomain(domainName)) {
-            DomainManager.registerDomain(domainName, {
-                major: 0,
-                minor: 1
-            });
+            DomainManager.registerDomain(domainName, {major: 0, minor: 1});
         }
 
         DomainManager.registerCommand(domainName, "exec", exec, true, "Exec cmd",
@@ -45,6 +61,17 @@
                 type: "string"
             }]
             );
+        DomainManager.registerCommand(domainName, "write", write, false, "Write to stdin",
+            [{
+                name: "data",
+                type: "string"
+            }]);
+        DomainManager.registerCommand(domainName, "kill", kill, false, "Kill active process");
+        DomainManager.registerEvent(domainName, "data",
+            [{
+                name: "data",
+                type: "string"
+            }]);
     };
 
 }());

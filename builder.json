@@ -25,7 +25,7 @@
     },
     {
         "name": "Python",
-        "cmd": "python $FILE",
+        "cmd": "python -u $FILE",
         "file_reg": "(.*)\",",
         "line_reg": ", line ([0-9]+)",
         "msg_reg": ", line [0-9]+[ |\\n]*([\\w\\W]+)",

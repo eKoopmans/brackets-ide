@@ -1,16 +1,10 @@
-.builder-content {
-    overflow: scroll !important;
-    height: 150px;
-    padding: 5px 10px;
-}
-
 #Toolbar-Debug-And-Run {
-color:#65ff65;
-content: "";
-background: url("images/run.svg") 0 0 no-repeat;
-background-size:24px 24px;
-width: 24px;
-height: 24px;
+    color:#65ff65;
+    content: "";
+    background: url("images/run.svg") 0 0 no-repeat;
+    background-size:24px 24px;
+    width: 24px;
+    height: 24px;
 }
 .builder-table {
     width:100%;
@@ -35,22 +29,15 @@ height: 24px;
     border-color: #790000;
     border-width: 2px;
 }
-.builder-table .resizable-content-success pre {
-    background-color: transparent;
-}
-.resizable-content-success {
+.resizable-content {
     overflow: auto;
-    max-height: 100%;
-    margin-bottom: 32px;
+    max-height: calc(100% - 28px);
 }
-.resizable-content-error {
-    margin-bottom: 32px;
+.error-table {
     background-color: white;
-    overflow: auto;
-    max-height: 100%;
 }
 .build-success {
-    width:100%;
+    width: calc(100%-4px);
     background-color: green;
     color: white;
     font-weight: bold;
@@ -58,9 +45,26 @@ height: 24px;
     padding: 3px 3px 3px 12px;
 }
 .builder-content-result {
-    font-size: 80%;
     background-color: white;
     padding: 5px;
+    width: 100%;
+    box-sizing: border-box;
+    overflow-y: hidden;
+    font-family: monospace;
+    font-size: 90%;
+}
+.invisible-input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+.resizable-content textarea {
+    resize: none;
+    outline: none;
 }
 .compiler-gutter { width: 1em; text-align: right; }
 .cm-error {
