@@ -87,8 +87,8 @@ define(function (require, exports, module) {
             return e.preventDefault();
         }
 
-        // Handle enter key.
-        if (e.keyCode === 13) {
+        // Handle enter/return key.
+        if (e.keyCode === 13 || e.keyCode === 10) {
             setContentText(contentText, true);
             return e.preventDefault();
         }
